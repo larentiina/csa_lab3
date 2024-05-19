@@ -1,8 +1,8 @@
-import json
-import sys
-import re
 import enum
+import re
+import sys
 from enum import Enum, auto
+
 from isa import Opcode, AddressMode, write_code
 
 
@@ -311,6 +311,7 @@ class Compiler:
                               "addr_mode": AddressMode.DIRECT})
                 elif node.op2.type == Parser.INT_CONST:
                     self.gen({"opcode": Opcode.SUB, "arg": node.op2.value, "addr_mode": AddressMode.IMMEDIATE})
+
                 else:
                     self.compile(node.op2)
 

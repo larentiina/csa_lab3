@@ -1,0 +1,44 @@
+[
+    {
+        "opcode": "LD",
+        "arg": "0",
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
+        "arg": 0,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "IN"
+    },
+    {
+        "opcode": "ST",
+        "arg": 0,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "JN",
+        "arg": 9,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "OUT"
+    },
+    {
+        "opcode": "IN"
+    },
+    {
+        "opcode": "ST",
+        "arg": 0,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "JMP",
+        "arg": 4,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "HLT"
+    }
+]

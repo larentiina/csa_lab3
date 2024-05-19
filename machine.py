@@ -216,7 +216,6 @@ def simulation(code, input_tokens, data_memory_size, limit):
     except StopIteration:
         pass
     output = ""
-    # print(control_unit.data_path.output_buffer)
     for i in control_unit.data_path.output_buffer:
         output+=i
     print(output)
