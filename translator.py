@@ -147,7 +147,6 @@ class Parser:
         new_node = node
         if node.value != "==" and node.value != "<" and node.value != ">":
             temp = node.op2
-            print(temp.value)
             while temp.value != "==" and temp.value != "<" and temp.value != ">":
                 temp = temp.op2
             new_node = temp
@@ -219,7 +218,7 @@ class Parser:
     def parse(self):
         node = Node(Parser.PROG)
         node.op1 = self.statement()
-        self.print_tree(node)
+        # self.print_tree(node)
         return node
 
 
@@ -519,7 +518,7 @@ class Compiler:
                         value = node.value
 
                     var_addr = self.memory_manager.variables_address[value]
-                    print(var_addr)
+                    # print(var_addr)
                     self.memory_manager.memory[self.memory_manager.memory_counter+20]=var_addr
 
                     self.memory_manager.variables_address["ptr"] = self.memory_manager.memory_counter+20
@@ -711,18 +710,17 @@ def main(source, target):
     with open (source) as file:
         data = file.read().replace("\n", "")
 
-    print(data)
+    # print(data)
     parser = Parser(Lexer(), Lexer().lex(data))
     node = parser.parse()
     mm = MemoryManager()
 
     compiler = Compiler(mm, node)
     program = compiler.compile(node)
-    print(mm.memory)
     count = 0
-    for i in program:
-        print(f"{count}. {i}")
-        count += 1
+    # for i in program:
+    #     print(f"{count}. {i}")
+    #     count += 1
     write_code(target, program,mm.memory)
 
 
