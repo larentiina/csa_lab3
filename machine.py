@@ -33,7 +33,7 @@ class DataPath:
     data_register = None
     alu = None
 
-    def __init__(self,data, data_memory_size, input_buffer):
+    def __init__(self, data, data_memory_size, input_buffer):
         assert data_memory_size > 0, "Data_memory size should be non-zero"
         self.data_memory_size = data_memory_size
         self.data_memory = data
@@ -103,7 +103,6 @@ class DataPath:
         self.output_buffer.append(chr(self.acc))
 
 
-
 class ControlUnit:
     def __init__(self, program, data_path):
         self.program = program
@@ -160,7 +159,7 @@ class ControlUnit:
             self.tick()
             self.data_path.signal_wr_to_memory()
             self.tick()
-        elif opcode in [Opcode.SUB, Opcode.CMP,Opcode.ADD]:
+        elif opcode in [Opcode.SUB, Opcode.CMP, Opcode.ADD]:
             self.operand_fetch(instr)
             self.signal_latch_program_counter(sel_next=True)
             if opcode == Opcode.ADD:
@@ -217,8 +216,8 @@ class ControlUnit:
         )
 
 
-def simulation(data,code, input_tokens, data_memory_size, limit):
-    data_path = DataPath(data,data_memory_size, input_tokens)
+def simulation(data, code, input_tokens, data_memory_size, limit):
+    data_path = DataPath(data, data_memory_size, input_tokens)
     control_unit = ControlUnit(code, data_path)
     instr_counter = 0
     try:
@@ -253,8 +252,6 @@ def main(code_file, input_file):
         data_memory_size=256,
         limit=2000,
     )
-
-
 
 
 if __name__ == "__main__":

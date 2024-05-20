@@ -164,7 +164,7 @@ class Parser:
             elif self.tokens[self.i - 1][0] == "string":
                 node = Node(Parser.VAR_STRING, self.get_token_text())
             else:
-                node =  Node(Parser.VAR, self.get_token_text())
+                node = Node(Parser.VAR, self.get_token_text())
         elif kind == TokensName.INT:
             node = Node(Parser.INT_CONST, self.get_token_text())
         else:
@@ -218,7 +218,6 @@ class Parser:
     def parse(self):
         node = Node(Parser.PROG)
         node.op1 = self.statement()
-        # self.print_tree(node)
         return node
 
 
@@ -378,7 +377,7 @@ class Compiler:
             self.memory_manager.variables_address[node.value] = self.memory_manager.memory_counter
             self.memory_manager.variables_types[node.value] = "string"
         elif node.type == Parser.INT_CONST:
-            self.memory_manager.memory[self.memory_manager.memory_counter]=node.value
+            self.memory_manager.memory[self.memory_manager.memory_counter] = node.value
         elif node.type == Parser.STRING_CONST:
             value = node.value
             self.memory_manager.memory[self.memory_manager.memory_counter] = len(value)
@@ -509,7 +508,10 @@ class Compiler:
                     }
         elif node.type == Parser.FUNC:
             if node.value == "print":
-                if node.op1.type == Parser.STRING_CONST or self.memory_manager.variables_types[node.op1.value] == "string":
+                if (
+                    node.op1.type == Parser.STRING_CONST
+                    or self.memory_manager.variables_types[node.op1.value] == "string"
+                ):
                     value = node.op1.value
                     if node.op1.type == Parser.STRING_CONST:
                         self.memory_manager.variables_address[node.value] = self.memory_manager.memory_counter
@@ -518,12 +520,11 @@ class Compiler:
                         value = node.value
 
                     var_addr = self.memory_manager.variables_address[value]
-                    # print(var_addr)
-                    self.memory_manager.memory[self.memory_manager.memory_counter+20]=var_addr
+                    self.memory_manager.memory[self.memory_manager.memory_counter + 20] = var_addr
 
-                    self.memory_manager.variables_address["ptr"] = self.memory_manager.memory_counter+20
+                    self.memory_manager.variables_address["ptr"] = self.memory_manager.memory_counter + 20
                     self.memory_manager.memory_counter += 1
-                    self.memory_manager.variables_address["temp_count"] = self.memory_manager.memory_counter+20
+                    self.memory_manager.variables_address["temp_count"] = self.memory_manager.memory_counter + 20
                     self.memory_manager.memory_counter += 1
                     self.gen(
                         {
@@ -610,7 +611,7 @@ class Compiler:
                     var = node.op1.value
 
                     addr_ptr = self.memory_manager.memory_counter
-                    self.memory_manager.memory[addr_ptr]= addr_ptr+2
+                    self.memory_manager.memory[addr_ptr] = addr_ptr + 2
                     self.memory_manager.memory_counter += 1
                     self.memory_manager.variables_address[var] = self.memory_manager.memory_counter
                     self.memory_manager.memory[self.memory_manager.memory_counter] = 0
@@ -707,21 +708,15 @@ class Compiler:
 
 
 def main(source, target):
-    with open (source) as file:
+    with open(source) as file:
         data = file.read().replace("\n", "")
-
-    # print(data)
     parser = Parser(Lexer(), Lexer().lex(data))
     node = parser.parse()
     mm = MemoryManager()
 
     compiler = Compiler(mm, node)
     program = compiler.compile(node)
-    count = 0
-    # for i in program:
-    #     print(f"{count}. {i}")
-    #     count += 1
-    write_code(target, program,mm.memory)
+    write_code(target, program, mm.memory)
 
 
 if __name__ == "__main__":

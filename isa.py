@@ -42,7 +42,7 @@ class Term(namedtuple("Term", "opcode arg addr_mode")):
     """
 
 
-def write_code(filename, code,data):
+def write_code(filename, code, data):
     """Записать машинный код в файл."""
     with open(filename, "w", encoding="utf-8") as file:
         json.dump(code, file, indent=4)
@@ -65,4 +65,4 @@ def read_code(filename):
     with open("data_section.txt", encoding="utf-8") as file:
         data_section = json.loads(file.read())
 
-    return data_section,code
+    return data_section, code
