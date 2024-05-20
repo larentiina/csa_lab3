@@ -1,6 +1,4 @@
 from isa import Opcode, AddressMode, read_code
-import logging
-import sys
 from enum import Enum
 import logging
 

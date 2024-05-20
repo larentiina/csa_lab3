@@ -454,7 +454,7 @@ class Compiler:
             if node.value == "if":
                 self.compile(node.op1)
                 index = self.pc
-                is_else = node.op3 != None
+                is_else = node.op3 is not None
                 if node.op1.value == "<":
                     self.gen(
                         {
@@ -488,7 +488,7 @@ class Compiler:
                         "addr_mode": AddressMode.IMMEDIATE,
                     }
 
-                if node.op3 != None:
+                if node.op3 is not None:
                     index = self.pc
                     self.gen(
                         {
