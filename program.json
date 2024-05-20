@@ -1,7 +1,7 @@
 [
     {
         "opcode": "LD",
-        "arg": "0",
+        "arg": 11,
         "addr_mode": "IMMEDIATE"
     },
     {
@@ -10,32 +10,181 @@
         "addr_mode": "IMMEDIATE"
     },
     {
-        "opcode": "IN"
-    },
-    {
-        "opcode": "ST",
-        "arg": 0,
+        "opcode": "LD",
+        "arg": 72,
         "addr_mode": "IMMEDIATE"
     },
     {
-        "opcode": "JN",
+        "opcode": "ST",
+        "arg": 1,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 101,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
+        "arg": 2,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 108,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
+        "arg": 3,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 108,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
+        "arg": 4,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 111,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
+        "arg": 5,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 32,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
+        "arg": 6,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 119,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
+        "arg": 7,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 111,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
+        "arg": 8,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 114,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
         "arg": 9,
         "addr_mode": "IMMEDIATE"
     },
     {
-        "opcode": "OUT"
-    },
-    {
-        "opcode": "IN"
+        "opcode": "LD",
+        "arg": 108,
+        "addr_mode": "IMMEDIATE"
     },
     {
         "opcode": "ST",
+        "arg": 10,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 100,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
+        "arg": 11,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
         "arg": 0,
         "addr_mode": "IMMEDIATE"
     },
     {
+        "opcode": "ST",
+        "arg": 100,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 0,
+        "addr_mode": "DIRECT"
+    },
+    {
+        "opcode": "ST",
+        "arg": 101,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 100,
+        "addr_mode": "DIRECT"
+    },
+    {
+        "opcode": "ADD",
+        "arg": 1,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
+        "arg": 100,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 101,
+        "addr_mode": "DIRECT"
+    },
+    {
+        "opcode": "SUB",
+        "arg": 1,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "ST",
+        "arg": 101,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "JN",
+        "arg": 38,
+        "addr_mode": "IMMEDIATE"
+    },
+    {
+        "opcode": "LD",
+        "arg": 100,
+        "addr_mode": "INDIRECT"
+    },
+    {
+        "opcode": "OUTC"
+    },
+    {
         "opcode": "JMP",
-        "arg": 4,
+        "arg": 28,
         "addr_mode": "IMMEDIATE"
     },
     {
