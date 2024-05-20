@@ -708,7 +708,7 @@ class Compiler:
 
 
 def main(source, target):
-    with open (source, "r") as file:
+    with open (source) as file:
         data = file.read().replace("\n", "")
 
     print(data)
