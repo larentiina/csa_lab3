@@ -42,11 +42,13 @@ class Term(namedtuple("Term", "opcode arg addr_mode")):
     """
 
 
-def write_code(filename, code):
+def write_code(filename, code,data):
     """Записать машинный код в файл."""
     with open(filename, "w", encoding="utf-8") as file:
         json.dump(code, file, indent=4)
         file.write("\n")
+    with open("data_section.txt", "w", encoding="utf-8") as file:
+        file.write(json.dumps(data, indent=4))
 
 
 def read_code(filename):
@@ -60,4 +62,7 @@ def read_code(filename):
         if "arg" in instr:
             instr["addr_mode"] = AddressMode(instr["addr_mode"])
 
-    return code
+    with open("data_section.txt", encoding="utf-8") as file:
+        data_section = json.loads(file.read())
+
+    return data_section,code

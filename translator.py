@@ -228,7 +228,7 @@ class MemoryManager:
         self.memory_counter = 0
         self.variables_address: dict[str, int] = {}
         self.variables_types: dict[str, int] = {}
-        self.memory = []
+        self.memory = [0] * 256
 
 
 class Compiler:
@@ -260,7 +260,6 @@ class Compiler:
             self.gen({"opcode": Opcode.HLT})
         elif node.type == Parser.SEQ:
             self.compile(node.op1)
-
             self.compile(node.op2)
         elif node.type == Parser.EMPTY:
             pass
@@ -380,46 +379,50 @@ class Compiler:
             self.memory_manager.variables_address[node.value] = self.memory_manager.memory_counter
             self.memory_manager.variables_types[node.value] = "string"
         elif node.type == Parser.INT_CONST:
-            self.gen(
-                {
-                    "opcode": Opcode.LD,
-                    "arg": node.value,
-                    "addr_mode": AddressMode.IMMEDIATE,
-                }
-            )
-
+            # self.gen(
+            #     {
+            #         "opcode": Opcode.LD,
+            #         "arg": node.value,
+            #         "addr_mode": AddressMode.IMMEDIATE,
+            #     }
+            # )
+            # new
+            self.memory_manager.memory[self.memory_manager.memory_counter]=node.value
         elif node.type == Parser.STRING_CONST:
             value = node.value
-            self.gen(
-                {
-                    "opcode": Opcode.LD,
-                    "arg": len(value),
-                    "addr_mode": AddressMode.IMMEDIATE,
-                }
-            )
-            self.gen(
-                {
-                    "opcode": Opcode.ST,
-                    "arg": self.memory_manager.memory_counter,
-                    "addr_mode": AddressMode.IMMEDIATE,
-                }
-            )
+            # new
+            self.memory_manager.memory[self.memory_manager.memory_counter] = len(value)
+            # self.gen(
+            #     {
+            #         "opcode": Opcode.LD,
+            #         "arg": len(value),
+            #         "addr_mode": AddressMode.IMMEDIATE,
+            #     }
+            # )
+            # self.gen(
+            #     {
+            #         "opcode": Opcode.ST,
+            #         "arg": self.memory_manager.memory_counter,
+            #         "addr_mode": AddressMode.IMMEDIATE,
+            #     }
+            # )
             self.memory_manager.memory_counter += 1
             for i in range(len(value)):
-                self.gen(
-                    {
-                        "opcode": Opcode.LD,
-                        "arg": ord(value[i]),
-                        "addr_mode": AddressMode.IMMEDIATE,
-                    }
-                )
-                self.gen(
-                    {
-                        "opcode": Opcode.ST,
-                        "arg": self.memory_manager.memory_counter,
-                        "addr_mode": AddressMode.IMMEDIATE,
-                    }
-                )
+                self.memory_manager.memory[self.memory_manager.memory_counter] = ord(value[i])
+                # self.gen(
+                #     {
+                #         "opcode": Opcode.LD,
+                #         "arg": ord(value[i]),
+                #         "addr_mode": AddressMode.IMMEDIATE,
+                #     }
+                # )
+                # self.gen(
+                #     {
+                #         "opcode": Opcode.ST,
+                #         "arg": self.memory_manager.memory_counter,
+                #         "addr_mode": AddressMode.IMMEDIATE,
+                #     }
+                # )
                 self.memory_manager.memory_counter += 1
 
         elif Parser.VAR == node.type:
@@ -544,43 +547,27 @@ class Compiler:
                     }
         elif node.type == Parser.FUNC:
             if node.value == "print":
-                if node.op1.type == Parser.INT_CONST:
-                    self.gen({"opcode": Opcode.OUT})
-                elif (
-                    node.op1.type == Parser.STRING_CONST
-                    or self.memory_manager.variables_types[node.op1.value] == "string"
-                ):
+                if node.op1.type == Parser.STRING_CONST or self.memory_manager.variables_types[node.op1.value] == "string":
                     value = node.op1.value
                     if node.op1.type == Parser.STRING_CONST:
                         self.memory_manager.variables_address[node.value] = self.memory_manager.memory_counter
                         self.memory_manager.variables_types[node.value] = "string"
                         self.compile(node.op1)
                         value = node.value
+
                     var_addr = self.memory_manager.variables_address[value]
                     print(var_addr)
+                    self.memory_manager.memory[self.memory_manager.memory_counter+20]=var_addr
 
+                    self.memory_manager.variables_address["ptr"] = self.memory_manager.memory_counter+20
+                    self.memory_manager.memory_counter += 1
+                    self.memory_manager.variables_address["temp_count"] = self.memory_manager.memory_counter+20
+                    self.memory_manager.memory_counter += 1
                     self.gen(
                         {
                             "opcode": Opcode.LD,
-                            "arg": self.memory_manager.variables_address[value],
-                            "addr_mode": AddressMode.IMMEDIATE,
-                        }
-                    )
-
-                    self.memory_manager.variables_address["ptr"] = 100
-                    self.gen(
-                        {
-                            "opcode": Opcode.ST,
                             "arg": self.memory_manager.variables_address["ptr"],
-                            "addr_mode": AddressMode.IMMEDIATE,
-                        }
-                    )
-                    self.memory_manager.variables_address["temp_count"] = 101
-                    self.gen(
-                        {
-                            "opcode": Opcode.LD,
-                            "arg": self.memory_manager.variables_address[value],
-                            "addr_mode": AddressMode.DIRECT,
+                            "addr_mode": AddressMode.INDIRECT,
                         }
                     )
                     self.gen(
@@ -590,7 +577,6 @@ class Compiler:
                             "addr_mode": AddressMode.IMMEDIATE,
                         }
                     )
-
                     temp = self.pc
                     self.gen(
                         {
@@ -635,7 +621,6 @@ class Compiler:
                             "addr_mode": AddressMode.IMMEDIATE,
                         }
                     )
-
                     self.gen(
                         {
                             "opcode": Opcode.JN,
@@ -650,7 +635,7 @@ class Compiler:
                             "addr_mode": AddressMode.INDIRECT,
                         }
                     )
-                    self.gen({"opcode": Opcode.OUTC})
+                    self.gen({"opcode": Opcode.OUT})
                     self.gen(
                         {
                             "opcode": Opcode.JMP,
@@ -658,53 +643,16 @@ class Compiler:
                             "addr_mode": AddressMode.IMMEDIATE,
                         }
                     )
-                elif self.memory_manager.variables_types[node.op1.value] == "int":
-                    self.gen(
-                        {
-                            "opcode": Opcode.LD,
-                            "arg": self.memory_manager.variables_address[node.op1.value],
-                            "addr_mode": AddressMode.DIRECT,
-                        }
-                    )
-                    self.gen({"opcode": Opcode.OUT})
-
             elif node.value == "input":
                 if self.memory_manager.variables_types[node.op1.value] == "string":
                     var = node.op1.value
 
                     addr_ptr = self.memory_manager.memory_counter
+                    self.memory_manager.memory[addr_ptr]= addr_ptr+2
                     self.memory_manager.memory_counter += 1
                     self.memory_manager.variables_address[var] = self.memory_manager.memory_counter
+                    self.memory_manager.memory[self.memory_manager.memory_counter] = 0
                     addr_length = self.memory_manager.memory_counter
-                    self.gen(
-                        {
-                            "opcode": Opcode.LD,
-                            "arg": 0,
-                            "addr_mode": AddressMode.IMMEDIATE,
-                        }
-                    )
-                    self.gen(
-                        {
-                            "opcode": Opcode.ST,
-                            "arg": self.memory_manager.memory_counter,
-                            "addr_mode": AddressMode.IMMEDIATE,
-                        }
-                    )
-                    self.memory_manager.memory_counter += 1
-                    self.gen(
-                        {
-                            "opcode": Opcode.LD,
-                            "arg": self.memory_manager.memory_counter,
-                            "addr_mode": AddressMode.IMMEDIATE,
-                        }
-                    )
-                    self.gen(
-                        {
-                            "opcode": Opcode.ST,
-                            "arg": addr_ptr,
-                            "addr_mode": AddressMode.IMMEDIATE,
-                        }
-                    )
                     temp = self.pc
                     self.gen({"opcode": Opcode.IN})
                     self.gen(
@@ -773,17 +721,6 @@ class Compiler:
                             "addr_mode": AddressMode.IMMEDIATE,
                         }
                     )
-                    self.memory_manager.memory_counter += 20
-                elif self.memory_manager.variables_types[node.op1.value] == "int":
-                    var = node.op1.value
-                    self.gen({"opcode": Opcode.IN})
-                    self.gen(
-                        {
-                            "opcode": Opcode.ST,
-                            "arg": self.memory_manager.variables_address[var],
-                            "addr_mode": AddressMode.IMMEDIATE,
-                        }
-                    )
             elif node.value == "input_char":
                 var = node.op1.value
                 self.gen({"opcode": Opcode.IN})
@@ -802,13 +739,13 @@ class Compiler:
                         "addr_mode": AddressMode.DIRECT,
                     }
                 )
-                self.gen({"opcode": Opcode.OUTC})
+                self.gen({"opcode": Opcode.OUT})
 
         return self.program
 
 
 def main(source, target):
-    with (source, "r") as file:
+    with open (source, "r") as file:
         data = file.read().replace("\n", "")
 
     print(data)
@@ -818,11 +755,12 @@ def main(source, target):
 
     compiler = Compiler(mm, node)
     program = compiler.compile(node)
+    print(mm.memory)
     count = 0
     for i in program:
         print(f"{count}. {i}")
         count += 1
-    write_code(target, program)
+    write_code(target, program,mm.memory)
 
 
 if __name__ == "__main__":

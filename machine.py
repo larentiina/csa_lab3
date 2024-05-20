@@ -33,10 +33,10 @@ class DataPath:
     data_register = None
     alu = None
 
-    def __init__(self, data_memory_size, input_buffer):
+    def __init__(self,data, data_memory_size, input_buffer):
         assert data_memory_size > 0, "Data_memory size should be non-zero"
         self.data_memory_size = data_memory_size
-        self.data_memory = [0] * data_memory_size
+        self.data_memory = data
         self.data_address = 0
         self.acc = 0
         self.input_buffer = input_buffer
@@ -73,7 +73,7 @@ class DataPath:
         if sel == AccMuxSignals.ALU:
             self.acc = self.alu
             if self.acc == 1024:
-                self.acc
+                pass
         elif sel == AccMuxSignals.IN:
             self.acc = ord(self.input_buffer[self.input_buffer_counter])
             self.input_buffer_counter += 1
@@ -100,10 +100,8 @@ class DataPath:
         self.alu = self.data_register
 
     def signal_latch_out(self):
-        self.output_buffer.append(str(self.acc))
-
-    def signal_latch_outc(self):
         self.output_buffer.append(chr(self.acc))
+
 
 
 class ControlUnit:
@@ -220,8 +218,8 @@ class ControlUnit:
         )
 
 
-def simulation(code, input_tokens, data_memory_size, limit):
-    data_path = DataPath(data_memory_size, input_tokens)
+def simulation(data,code, input_tokens, data_memory_size, limit):
+    data_path = DataPath(data,data_memory_size, input_tokens)
     control_unit = ControlUnit(code, data_path)
     instr_counter = 0
     try:
@@ -241,7 +239,7 @@ def simulation(code, input_tokens, data_memory_size, limit):
 
 
 def main(code_file, input_file):
-    code = read_code(code_file)
+    data, code = read_code(code_file)
     with open(input_file, encoding="utf-8") as file:
         input_text = file.read()
         input_token = []
@@ -250,10 +248,11 @@ def main(code_file, input_file):
         input_token.append("\x00")
 
     simulation(
+        data,
         code,
         input_tokens=input_token,
         data_memory_size=256,
-        limit=1000,
+        limit=2000,
     )
 
 
