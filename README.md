@@ -8,5 +8,6 @@ alg | acc | harv | hw | tick | struct | stream | port | pstr | prob1 |
 
 ## Модель процессора
 ![data_path.svg](./model/data_path.svg)
+![cu.svg](./model/cu.svg)
 
 
