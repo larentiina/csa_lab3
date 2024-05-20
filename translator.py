@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 import enum
 import re
 import sys
 from enum import Enum, auto
+from typing import ClassVar
 
-from isa import Opcode, AddressMode, write_code
+from isa import AddressMode, Opcode, write_code
 
 
 class TokensName(Enum):
@@ -23,7 +26,7 @@ class TokensName(Enum):
 
 
 class Lexer:
-    token_exprs = [
+    token_exprs: ClassVar[list] = [
         (r"[ \n\t]+", None),
         (r"#[^\n]*", None),
         (r"if", TokensName.KEY_WORDS),
@@ -68,7 +71,7 @@ class Lexer:
                         tokens.append(token)
                     break
             if not match:
-                sys.stderr.write("Illegal character: %s\n" % characters[pos])
+                sys.stderr.write("Illegal character: {}\n".format(characters[pos]))
                 sys.exit(1)
             else:
                 pos = match.end(0)
@@ -76,8 +79,8 @@ class Lexer:
 
 
 class Node:
-    def __init__(self, type, value=None, op1=None, op2=None, op3=None):
-        self.type = type
+    def __init__(self, kind, value=None, op1=None, op2=None, op3=None):
+        self.type = kind
         self.value = value
         self.op1 = op1
         self.op2 = op2
@@ -123,16 +126,11 @@ class Parser:
         self.next_token()
         text_token = self.get_token_text()
         if node.type == Parser.FUNC:
-            return self.kind_of_node(self.get_token())
-        elif self.get_token_type() == TokensName.ID:
-            return node
+            node = self.kind_of_node(self.get_token())
         elif self.get_token_type() == TokensName.OPERATOR:
             self.next_token()
-            n = Node(Parser.OPERATOR, value=text_token, op1=node, op2=self.statement())
-
-            return n
-        else:
-            return node
+            node = Node(Parser.OPERATOR, value=text_token, op1=node, op2=self.statement())
+        return node
 
     def cond_expression(self):
         n = Node(Parser.EMPTY)
@@ -159,18 +157,20 @@ class Parser:
         return new_node
 
     def kind_of_node(self, token):
-        type = token[1]
-        if type == TokensName.ID:
+        kind = token[1]
+        node = None
+        if kind == TokensName.ID:
             if self.tokens[self.i - 1][0] == "int":
-                return Node(Parser.VAR_INT, self.get_token_text())
+                node = Node(Parser.VAR_INT, self.get_token_text())
             elif self.tokens[self.i - 1][0] == "string":
-                return Node(Parser.VAR_STRING, self.get_token_text())
+                node = Node(Parser.VAR_STRING, self.get_token_text())
             else:
-                return Node(Parser.VAR, self.get_token_text())
-        elif type == TokensName.INT:
-            return Node(Parser.INT_CONST, self.get_token_text())
+                node =  Node(Parser.VAR, self.get_token_text())
+        elif kind == TokensName.INT:
+            node = Node(Parser.INT_CONST, self.get_token_text())
         else:
-            return Node(Parser.STRING_CONST, self.get_token_text().replace('"', ""))
+            node = Node(Parser.STRING_CONST, self.get_token_text().replace('"', ""))
+        return node
 
     def statement(self):
         n = None
@@ -183,9 +183,7 @@ class Parser:
             n = self.expression(node)
         elif self.get_token_type() == TokensName.KEY_WORDS:
             if self.get_token_text() != "else":
-                n = Node(
-                    Parser.KEY_WORDS, self.get_token_text(), op1=self.cond_expression()
-                )
+                n = Node(Parser.KEY_WORDS, self.get_token_text(), op1=self.cond_expression())
                 n.op2 = self.cond_expression()
                 self.next_token()
             if self.get_token_text() == "else":
@@ -234,7 +232,6 @@ class MemoryManager:
 
 
 class Compiler:
-
     def __init__(self, memory_manager, nodes):
         self.program = list()
         self.memory_manager = memory_manager
@@ -255,8 +252,7 @@ class Compiler:
                 }
             )
             return False
-        else:
-            return True
+        return True
 
     def compile(self, node):
         if node.type == Parser.PROG:
@@ -286,9 +282,7 @@ class Compiler:
                     self.gen(
                         {
                             "opcode": Opcode.CMP,
-                            "arg": self.memory_manager.variables_address[
-                                node.op2.value
-                            ],
+                            "arg": self.memory_manager.variables_address[node.op2.value],
                             "addr_mode": AddressMode.DIRECT,
                         }
                     )
@@ -310,9 +304,7 @@ class Compiler:
                     self.gen(
                         {
                             "opcode": Opcode.ADD,
-                            "arg": self.memory_manager.variables_address[
-                                node.op2.value
-                            ],
+                            "arg": self.memory_manager.variables_address[node.op2.value],
                             "addr_mode": AddressMode.DIRECT,
                         }
                     )
@@ -334,9 +326,7 @@ class Compiler:
                     self.gen(
                         {
                             "opcode": Opcode.DIV,
-                            "arg": self.memory_manager.variables_address[
-                                node.op2.value
-                            ],
+                            "arg": self.memory_manager.variables_address[node.op2.value],
                             "addr_mode": AddressMode.DIRECT,
                         }
                     )
@@ -358,9 +348,7 @@ class Compiler:
                     self.gen(
                         {
                             "opcode": Opcode.SUB,
-                            "arg": self.memory_manager.variables_address[
-                                node.op2.value
-                            ],
+                            "arg": self.memory_manager.variables_address[node.op2.value],
                             "addr_mode": AddressMode.DIRECT,
                         }
                     )
@@ -384,16 +372,12 @@ class Compiler:
                     "addr_mode": AddressMode.IMMEDIATE,
                 }
             )
-            self.memory_manager.variables_address[node.value] = (
-                self.memory_manager.memory_counter
-            )
+            self.memory_manager.variables_address[node.value] = self.memory_manager.memory_counter
             self.memory_manager.variables_types[node.value] = "int"
             self.memory_manager.memory_counter += 1
 
         elif node.type == Parser.VAR_STRING:
-            self.memory_manager.variables_address[node.value] = (
-                self.memory_manager.memory_counter
-            )
+            self.memory_manager.variables_address[node.value] = self.memory_manager.memory_counter
             self.memory_manager.variables_types[node.value] = "string"
         elif node.type == Parser.INT_CONST:
             self.gen(
@@ -448,9 +432,7 @@ class Compiler:
                     }
                 )
             else:
-                self.memory_manager.variables_address[node.value] = (
-                    self.memory_manager.memory_counter
-                )
+                self.memory_manager.variables_address[node.value] = self.memory_manager.memory_counter
 
         elif node.type == Parser.KEY_WORDS:
             if node.value == "if":
@@ -570,9 +552,7 @@ class Compiler:
                 ):
                     value = node.op1.value
                     if node.op1.type == Parser.STRING_CONST:
-                        self.memory_manager.variables_address[node.value] = (
-                            self.memory_manager.memory_counter
-                        )
+                        self.memory_manager.variables_address[node.value] = self.memory_manager.memory_counter
                         self.memory_manager.variables_types[node.value] = "string"
                         self.compile(node.op1)
                         value = node.value
@@ -595,8 +575,6 @@ class Compiler:
                             "addr_mode": AddressMode.IMMEDIATE,
                         }
                     )
-
-                    # self.memory_manager.memory_counter += 1
                     self.memory_manager.variables_address["temp_count"] = 101
                     self.gen(
                         {
@@ -612,8 +590,6 @@ class Compiler:
                             "addr_mode": AddressMode.IMMEDIATE,
                         }
                     )
-
-                    # self.memory_manager.memory_counter += 1
 
                     temp = self.pc
                     self.gen(
@@ -686,9 +662,7 @@ class Compiler:
                     self.gen(
                         {
                             "opcode": Opcode.LD,
-                            "arg": self.memory_manager.variables_address[
-                                node.op1.value
-                            ],
+                            "arg": self.memory_manager.variables_address[node.op1.value],
                             "addr_mode": AddressMode.DIRECT,
                         }
                     )
@@ -700,9 +674,7 @@ class Compiler:
 
                     addr_ptr = self.memory_manager.memory_counter
                     self.memory_manager.memory_counter += 1
-                    self.memory_manager.variables_address[var] = (
-                        self.memory_manager.memory_counter
-                    )
+                    self.memory_manager.variables_address[var] = self.memory_manager.memory_counter
                     addr_length = self.memory_manager.memory_counter
                     self.gen(
                         {
@@ -826,8 +798,7 @@ class Compiler:
                 self.gen(
                     {
                         "opcode": Opcode.LD,
-                        "arg": self.memory_manager.variables_address[node.op1.value]
-                        + 1,
+                        "arg": self.memory_manager.variables_address[node.op1.value] + 1,
                         "addr_mode": AddressMode.DIRECT,
                     }
                 )
@@ -837,13 +808,11 @@ class Compiler:
 
 
 def main(source, target):
-    with open(source, "r") as file:
+    with (source, "r") as file:
         data = file.read().replace("\n", "")
 
     print(data)
-    lexer = Lexer()
-    tokens = lexer.lex(data)
-    parser = Parser(lexer, tokens)
+    parser = Parser(Lexer(), Lexer().lex(data))
     node = parser.parse()
     mm = MemoryManager()
 
@@ -857,8 +826,6 @@ def main(source, target):
 
 
 if __name__ == "__main__":
-    assert (
-        len(sys.argv) == 3
-    ), "Wrong arguments: translator.py <input_file> <target_file>"
+    assert len(sys.argv) == 3, "Wrong arguments: translator.py <input_file> <target_file>"
     _, source, target = sys.argv
     main(source, target)

@@ -1,7 +1,8 @@
-from isa import Opcode, AddressMode, read_code
-from enum import Enum
 import logging
 import sys
+from enum import Enum
+
+from isa import AddressMode, Opcode, read_code
 
 
 class AccMuxSignals(Enum):
@@ -52,9 +53,7 @@ class DataPath:
             self.data_address = self.data_register
         elif sel == DAMuxSignals.CU:
             self.data_address = val
-        assert (
-            0 <= self.data_address < self.data_memory_size
-        ), "out of memory: {}".format(self.data_address)
+        assert 0 <= self.data_address < self.data_memory_size, "out of memory: {}".format(self.data_address)
 
     def signal_latch_data_reg(self, sel: DRMuxSignals, val: int):
         assert sel in {
@@ -163,16 +162,13 @@ class ControlUnit:
             self.tick()
             self.data_path.signal_wr_to_memory()
             self.tick()
-        elif opcode == Opcode.ADD:
+        elif opcode in [Opcode.SUB, Opcode.CMP,Opcode.ADD]:
             self.operand_fetch(instr)
             self.signal_latch_program_counter(sel_next=True)
-            self.data_path.signal_alu_add()
-            self.data_path.signal_latch_acc(AccMuxSignals.ALU)
-            self.tick()
-        elif opcode in [Opcode.SUB, Opcode.CMP]:
-            self.operand_fetch(instr)
-            self.signal_latch_program_counter(sel_next=True)
-            self.data_path.signal_alu_sub()
+            if opcode == Opcode.ADD:
+                self.data_path.signal_alu_add()
+            else:
+                self.data_path.signal_alu_sub()
             self.data_path.signal_latch_acc(AccMuxSignals.ALU)
             self.tick()
         elif opcode == Opcode.DIV:
@@ -187,7 +183,6 @@ class ControlUnit:
         elif opcode == Opcode.JNZ:
             self.signal_latch_program_counter(self.data_path.zero_flag())
             self.tick()
-
         elif opcode == Opcode.JZ:
             self.signal_latch_program_counter(not self.data_path.zero_flag())
             self.tick()
@@ -196,23 +191,14 @@ class ControlUnit:
             self.tick()
         elif opcode == Opcode.JLE:
             self.signal_latch_program_counter(
-                not (
-                    self.data_path.neg_flag()
-                    or (not self.data_path.neg_flag() and self.data_path.zero_flag())
-                )
+                not (self.data_path.neg_flag() or (not self.data_path.neg_flag() and self.data_path.zero_flag()))
             )
             self.tick()
         elif opcode == Opcode.JGE:
-            self.signal_latch_program_counter(
-                (not self.data_path.zero_flag()) and self.data_path.neg_flag()
-            )
+            self.signal_latch_program_counter((not self.data_path.zero_flag()) and self.data_path.neg_flag())
             self.tick()
         elif opcode == Opcode.IN:
             self.data_path.signal_latch_acc(AccMuxSignals.IN)
-            self.signal_latch_program_counter(sel_next=True)
-            self.tick()
-        elif opcode == Opcode.OUTC:
-            self.data_path.signal_latch_outc()
             self.signal_latch_program_counter(sel_next=True)
             self.tick()
         elif opcode == Opcode.OUT:
@@ -223,19 +209,15 @@ class ControlUnit:
             raise StopIteration()
 
     def __repr__(self):
-        state = (
-            "{{TICK: {}, PC: {}, ADDR: {}, ACC: {}, DR: {}, DA {}, MEM: {}}}".format(
-                self._tick,
-                self.program_counter,
-                self.data_path.data_address,
-                self.data_path.acc,
-                self.data_path.data_register,
-                self.data_path.data_address,
-                self.data_path.data_memory,
-            )
+        return "{{TICK: {}, PC: {}, ADDR: {}, ACC: {}, DR: {}, DA {}, MEM: {}}}".format(
+            self._tick,
+            self.program_counter,
+            self.data_path.data_address,
+            self.data_path.acc,
+            self.data_path.data_register,
+            self.data_path.data_address,
+            self.data_path.data_memory,
         )
-
-        return state
 
 
 def simulation(code, input_tokens, data_memory_size, limit):
@@ -252,7 +234,8 @@ def simulation(code, input_tokens, data_memory_size, limit):
     output = ""
     for i in control_unit.data_path.output_buffer:
         output += i
-    print(output)
+    print("".join(output))
+    print("instr_counter: ", instr_counter, "ticks:", control_unit.program_counter)
     if instr_counter >= limit:
         logging.warning("Limit exceeded!")
 
@@ -273,8 +256,7 @@ def main(code_file, input_file):
         limit=1000,
     )
 
-    # print("".join(output))
-    # print("instr_counter: ", instr_counter, "ticks:", ticks)
+
 
 
 if __name__ == "__main__":
