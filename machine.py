@@ -89,7 +89,6 @@ class DataPath:
 
 
 class ControlUnit:
-
     def __init__(self, program, data_path):
         self.program = program
         self.program_counter = 0
@@ -112,15 +111,15 @@ class ControlUnit:
             self.program_counter = instr["arg"]
 
     def operand_fetch(self, instr):
-        value = instr['arg']
-        if instr['addr_mode'] == AddressMode.IMMEDIATE.value:
+        value = instr["arg"]
+        if instr["addr_mode"] == AddressMode.IMMEDIATE.value:
             self.data_path.signal_latch_data_reg(DRMuxSignals.CU, value)
             self.tick()
-        elif instr['addr_mode'] == AddressMode.DIRECT.value:
+        elif instr["addr_mode"] == AddressMode.DIRECT.value:
             self.data_path.signal_latch_data_address(DAMuxSignals.CU, value)
             self.data_path.signal_latch_data_reg(DRMuxSignals.DM, None)
             self.tick()
-        elif instr['addr_mode'] == AddressMode.INDIRECT.value:
+        elif instr["addr_mode"] == AddressMode.INDIRECT.value:
             self.data_path.signal_latch_data_address(DAMuxSignals.CU, value)
             self.data_path.signal_latch_data_reg(DRMuxSignals.DM, None)
             self.tick()
@@ -174,10 +173,17 @@ class ControlUnit:
             self.signal_latch_program_counter(not self.data_path.zero_flag())
             self.tick()
         elif opcode == Opcode.JN:
-            self.signal_latch_program_counter(not (self.data_path.neg_flag() or (not self.data_path.neg_flag() and self.data_path.zero_flag())))
+            self.signal_latch_program_counter(
+                not (
+                    self.data_path.neg_flag()
+                    or (not self.data_path.neg_flag() and self.data_path.zero_flag())
+                )
+            )
             self.tick()
         elif opcode == Opcode.JGE:
-            self.signal_latch_program_counter((not self.data_path.zero_flag()) and self.data_path.neg_flag())
+            self.signal_latch_program_counter(
+                (not self.data_path.zero_flag()) and self.data_path.neg_flag()
+            )
             self.tick()
         elif opcode == Opcode.IN:
             self.data_path.signal_latch_acc(AccMuxSignals.IN)
@@ -191,14 +197,16 @@ class ControlUnit:
             raise StopIteration()
 
     def __repr__(self):
-        state = "{{TICK: {}, PC: {}, ADDR: {}, ACC: {}, DR: {}, DA {}, MEM: {}}}".format(
-            self._tick,
-            self.program_counter,
-            self.data_path.data_address,
-            self.data_path.acc,
-            self.data_path.data_register,
-            self.data_path.data_address,
-            self.data_path.data_memory
+        state = (
+            "{{TICK: {}, PC: {}, ADDR: {}, ACC: {}, DR: {}, DA {}, MEM: {}}}".format(
+                self._tick,
+                self.program_counter,
+                self.data_path.data_address,
+                self.data_path.acc,
+                self.data_path.data_register,
+                self.data_path.data_address,
+                self.data_path.data_memory,
+            )
         )
 
         return state
@@ -217,7 +225,7 @@ def simulation(code, input_tokens, data_memory_size, limit):
         pass
     output = ""
     for i in control_unit.data_path.output_buffer:
-        output+=i
+        output += i
     print(output)
     if instr_counter >= limit:
         logging.warning("Limit exceeded!")
@@ -232,9 +240,6 @@ def main(code_file, input_file):
         for char in input_text:
             input_token.append(char)
         input_token.append("\x00")
-
-
-
 
     simulation(
         code,

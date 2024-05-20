@@ -1,11 +1,10 @@
-
 import json
 from collections import namedtuple
 from enum import Enum
 import enum
 
-class Opcode(str, Enum):
 
+class Opcode(str, Enum):
     ST = "ST"
     LD = "LD"
     ADD = "ADD"
@@ -23,6 +22,7 @@ class Opcode(str, Enum):
 
     def __str__(self):
         return str(self.value)
+
 
 class AddressMode(str, enum.Enum):
     IMMEDIATE = "IMMEDIATE"
@@ -42,9 +42,9 @@ class Term(namedtuple("Term", "opcode arg addr_mode")):
 
 def write_code(filename, code):
     """Записать машинный код в файл."""
-    with open(filename, 'w', encoding="utf-8") as file:
+    with open(filename, "w", encoding="utf-8") as file:
         json.dump(code, file, indent=4)
-        file.write('\n')
+        file.write("\n")
 
 
 def read_code(filename):
@@ -55,8 +55,7 @@ def read_code(filename):
         # Конвертация строки в Opcode
         instr["opcode"] = Opcode(instr["opcode"])
 
-        if 'arg' in instr:
-            instr['addr_mode'] = AddressMode(instr['addr_mode'])
+        if "arg" in instr:
+            instr["addr_mode"] = AddressMode(instr["addr_mode"])
 
     return code
-
