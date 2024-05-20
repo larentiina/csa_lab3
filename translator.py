@@ -379,50 +379,13 @@ class Compiler:
             self.memory_manager.variables_address[node.value] = self.memory_manager.memory_counter
             self.memory_manager.variables_types[node.value] = "string"
         elif node.type == Parser.INT_CONST:
-            # self.gen(
-            #     {
-            #         "opcode": Opcode.LD,
-            #         "arg": node.value,
-            #         "addr_mode": AddressMode.IMMEDIATE,
-            #     }
-            # )
-            # new
             self.memory_manager.memory[self.memory_manager.memory_counter]=node.value
         elif node.type == Parser.STRING_CONST:
             value = node.value
-            # new
             self.memory_manager.memory[self.memory_manager.memory_counter] = len(value)
-            # self.gen(
-            #     {
-            #         "opcode": Opcode.LD,
-            #         "arg": len(value),
-            #         "addr_mode": AddressMode.IMMEDIATE,
-            #     }
-            # )
-            # self.gen(
-            #     {
-            #         "opcode": Opcode.ST,
-            #         "arg": self.memory_manager.memory_counter,
-            #         "addr_mode": AddressMode.IMMEDIATE,
-            #     }
-            # )
             self.memory_manager.memory_counter += 1
             for i in range(len(value)):
                 self.memory_manager.memory[self.memory_manager.memory_counter] = ord(value[i])
-                # self.gen(
-                #     {
-                #         "opcode": Opcode.LD,
-                #         "arg": ord(value[i]),
-                #         "addr_mode": AddressMode.IMMEDIATE,
-                #     }
-                # )
-                # self.gen(
-                #     {
-                #         "opcode": Opcode.ST,
-                #         "arg": self.memory_manager.memory_counter,
-                #         "addr_mode": AddressMode.IMMEDIATE,
-                #     }
-                # )
                 self.memory_manager.memory_counter += 1
 
         elif Parser.VAR == node.type:

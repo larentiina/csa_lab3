@@ -233,7 +233,7 @@ def simulation(data,code, input_tokens, data_memory_size, limit):
     for i in control_unit.data_path.output_buffer:
         output += i
     print("".join(output))
-    print("instr_counter: ", instr_counter, "ticks:", control_unit.program_counter)
+    print("instr_counter: ", instr_counter, "ticks:", control_unit._tick)
     if instr_counter >= limit:
         logging.warning("Limit exceeded!")
 
