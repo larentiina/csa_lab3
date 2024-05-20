@@ -1,6 +1,7 @@
 from isa import Opcode, AddressMode, read_code
 from enum import Enum
 import logging
+import sys
 
 
 class AccMuxSignals(Enum):
@@ -43,20 +44,37 @@ class DataPath:
         self.input_buffer_counter = 0
 
     def signal_latch_data_address(self, sel: DAMuxSignals, val: int):
+        assert sel in {
+            DAMuxSignals.DR,
+            DAMuxSignals.CU,
+        }, "internal error, incorrect selector: {}".format(sel)
         if sel == DAMuxSignals.DR:
             self.data_address = self.data_register
         elif sel == DAMuxSignals.CU:
             self.data_address = val
+        assert (
+            0 <= self.data_address < self.data_memory_size
+        ), "out of memory: {}".format(self.data_address)
 
     def signal_latch_data_reg(self, sel: DRMuxSignals, val: int):
+        assert sel in {
+            DRMuxSignals.DM,
+            DRMuxSignals.CU,
+        }, "internal error, incorrect selector: {}".format(sel)
         if sel == DRMuxSignals.DM:
             self.data_register = self.data_memory[int(self.data_address)]
-        else:
+        elif sel == DRMuxSignals.CU:
             self.data_register = int(val)
 
     def signal_latch_acc(self, sel: AccMuxSignals):
+        assert sel in {
+            AccMuxSignals.ALU,
+            AccMuxSignals.IN,
+        }, "internal error, incorrect selector: {}".format(sel)
         if sel == AccMuxSignals.ALU:
             self.acc = self.alu
+            if self.acc == 1024:
+                self.acc
         elif sel == AccMuxSignals.IN:
             self.acc = ord(self.input_buffer[self.input_buffer_counter])
             self.input_buffer_counter += 1
@@ -83,6 +101,9 @@ class DataPath:
         self.alu = self.data_register
 
     def signal_latch_out(self):
+        self.output_buffer.append(str(self.acc))
+
+    def signal_latch_outc(self):
         self.output_buffer.append(chr(self.acc))
 
 
@@ -171,6 +192,9 @@ class ControlUnit:
             self.signal_latch_program_counter(not self.data_path.zero_flag())
             self.tick()
         elif opcode == Opcode.JN:
+            self.signal_latch_program_counter(not self.data_path.neg_flag())
+            self.tick()
+        elif opcode == Opcode.JLE:
             self.signal_latch_program_counter(
                 not (
                     self.data_path.neg_flag()
@@ -185,6 +209,10 @@ class ControlUnit:
             self.tick()
         elif opcode == Opcode.IN:
             self.data_path.signal_latch_acc(AccMuxSignals.IN)
+            self.signal_latch_program_counter(sel_next=True)
+            self.tick()
+        elif opcode == Opcode.OUTC:
+            self.data_path.signal_latch_outc()
             self.signal_latch_program_counter(sel_next=True)
             self.tick()
         elif opcode == Opcode.OUT:
@@ -234,7 +262,6 @@ def main(code_file, input_file):
     with open(input_file, encoding="utf-8") as file:
         input_text = file.read()
         input_token = []
-
         for char in input_text:
             input_token.append(char)
         input_token.append("\x00")
@@ -252,7 +279,5 @@ def main(code_file, input_file):
 
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.DEBUG)
-    # _, code_file, input_file = sys.argv
-    code_file = "program.json"
-    input_file = "input"
+    _, code_file, input_file = sys.argv
     main(code_file, input_file)

@@ -32,6 +32,8 @@ class Lexer:
         (r"int", TokensName.TYPE),
         (r"string", TokensName.TYPE),
         (r"[0-9]+", TokensName.INT),
+        (r"input_char", TokensName.FUNC),
+        (r"print_char", TokensName.FUNC),
         (r"\"[A-Za-z0-9_?!\s,]*\"", TokensName.STRING),
         (r"input", TokensName.FUNC),
         (r"print", TokensName.FUNC),
@@ -232,9 +234,9 @@ class MemoryManager:
 
 
 class Compiler:
-    program = []
 
     def __init__(self, memory_manager, nodes):
+        self.program = list()
         self.memory_manager = memory_manager
         self.nodes = nodes
         self.pc = 0
@@ -554,7 +556,7 @@ class Compiler:
                     }
                 elif node.op1.value == ">":
                     self.program[index] = {
-                        "opcode": Opcode.JN,
+                        "opcode": Opcode.JLE,
                         "arg": self.pc,
                         "addr_mode": AddressMode.IMMEDIATE,
                     }
@@ -672,7 +674,7 @@ class Compiler:
                             "addr_mode": AddressMode.INDIRECT,
                         }
                     )
-                    self.gen({"opcode": Opcode.OUT})
+                    self.gen({"opcode": Opcode.OUTC})
                     self.gen(
                         {
                             "opcode": Opcode.JMP,
@@ -681,6 +683,15 @@ class Compiler:
                         }
                     )
                 elif self.memory_manager.variables_types[node.op1.value] == "int":
+                    self.gen(
+                        {
+                            "opcode": Opcode.LD,
+                            "arg": self.memory_manager.variables_address[
+                                node.op1.value
+                            ],
+                            "addr_mode": AddressMode.DIRECT,
+                        }
+                    )
                     self.gen({"opcode": Opcode.OUT})
 
             elif node.value == "input":
@@ -790,7 +801,7 @@ class Compiler:
                             "addr_mode": AddressMode.IMMEDIATE,
                         }
                     )
-                    # self.memory_manager.memory_counter += 10
+                    self.memory_manager.memory_counter += 20
                 elif self.memory_manager.variables_types[node.op1.value] == "int":
                     var = node.op1.value
                     self.gen({"opcode": Opcode.IN})
@@ -801,14 +812,35 @@ class Compiler:
                             "addr_mode": AddressMode.IMMEDIATE,
                         }
                     )
+            elif node.value == "input_char":
+                var = node.op1.value
+                self.gen({"opcode": Opcode.IN})
+                self.gen(
+                    {
+                        "opcode": Opcode.ST,
+                        "arg": self.memory_manager.variables_address[var] + 1,
+                        "addr_mode": AddressMode.IMMEDIATE,
+                    }
+                )
+            elif node.value == "print_char":
+                self.gen(
+                    {
+                        "opcode": Opcode.LD,
+                        "arg": self.memory_manager.variables_address[node.op1.value]
+                        + 1,
+                        "addr_mode": AddressMode.DIRECT,
+                    }
+                )
+                self.gen({"opcode": Opcode.OUTC})
 
         return self.program
 
 
 def main(source, target):
-    # source = 'input_code_file'
     with open(source, "r") as file:
         data = file.read().replace("\n", "")
+
+    print(data)
     lexer = Lexer()
     tokens = lexer.lex(data)
     parser = Parser(lexer, tokens)

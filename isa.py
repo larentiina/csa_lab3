@@ -13,10 +13,12 @@ class Opcode(str, Enum):
     JNZ = "JNZ"
     JZ = "JZ"
     JN = "JN"
+    JLE = "JLE"
     JMP = "JMP"
     CMP = "CMP"
     HLT = "HLT"
     OUT = "OUT"
+    OUTC = "OUTC"
     IN = "IN"
     JGE = "JGE"
 
