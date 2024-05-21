@@ -463,3 +463,9 @@ out_code: |
           "opcode": "HLT"
       }
   ]
+out_ast: |
+  Node(type=PROG, value="None")
+    Node(type=SEQ, value="None")
+      Node(type=EMPTY, value="None")
+      Node(type=FUNC, value="print")
+        Node(type=STRING_CONST, value="Hello world!")

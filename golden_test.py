@@ -10,6 +10,24 @@ import machine
 import translator
 
 
+def print_tree(node, level=0):
+    if node is None:
+        return
+    print("  " * level + str(node))
+    print_tree(node.op1, level + 1)
+    print_tree(node.op2, level + 1)
+    print_tree(node.op3, level + 1)
+
+@pytest.mark.golden_test("golden/*.yml")
+def test_parser(golden):
+    with contextlib.redirect_stdout(io.StringIO()) as stdout:
+        with io.StringIO(golden["in_source"]) as f:
+            data = f.read().replace("\n", "")
+            parser = translator.Parser(translator.Lexer(), translator.Lexer().lex(data))
+            node = parser.parse()
+            print_tree(node)
+
+    assert stdout.getvalue() == golden.out["out_ast"]
 @pytest.mark.golden_test("golden/*.yml")
 def test_translator_and_machine(golden, caplog):
     # Установим уровень отладочного вывода на DEBUG
@@ -18,21 +36,22 @@ def test_translator_and_machine(golden, caplog):
     # Создаём временную папку для тестирования приложения.
     with tempfile.TemporaryDirectory() as tmpdirname:
         # Готовим имена файлов для входных и выходных данных.
-        source = os.path.join(tmpdirname, "source.lisp")
+        source = os.path.join(tmpdirname, "source.txt")
         input_stream = os.path.join(tmpdirname, "input.txt")
         target = os.path.join(tmpdirname, "target.o")
 
         # Записываем входные данные в файлы. Данные берутся из теста.
         with open(source, "w", encoding="utf-8") as file:
             file.write(golden["in_source"])
-            print(golden["in_source"])
+            # print(golden["in_source"])
         with open(input_stream, "w", encoding="utf-8") as file:
             file.write(golden["in_stdin"])
-            print(golden["in_stdin"])
+            # print(golden["in_stdin"])
+
+
 
         # Запускаем транслятор и собираем весь стандартный вывод в переменную
         # stdout
-
         with contextlib.redirect_stdout(io.StringIO()) as stdout:
             translator.main(source, target)
             print("============================================================")

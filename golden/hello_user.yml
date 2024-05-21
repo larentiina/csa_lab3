@@ -5,7 +5,6 @@ in_source: |
       print("Hello, ");
       input(name);
       print(name);
-      
   }
 in_stdin: |-
   lera
@@ -1297,3 +1296,22 @@ out_code: |
           "opcode": "HLT"
       }
   ]
+out_ast: |
+  Node(type=PROG, value="None")
+    Node(type=SEQ, value="None")
+      Node(type=SEQ, value="None")
+        Node(type=SEQ, value="None")
+          Node(type=SEQ, value="None")
+            Node(type=SEQ, value="None")
+              Node(type=EMPTY, value="None")
+              Node(type=FUNC, value="print")
+                Node(type=STRING_CONST, value="Whats your name? ")
+            Node(type=OPERATOR, value="=")
+              Node(type=VAR_STRING, value="name")
+              Node(type=STRING_CONST, value="")
+          Node(type=FUNC, value="print")
+            Node(type=STRING_CONST, value="Hello, ")
+        Node(type=FUNC, value="input")
+          Node(type=VAR, value="name")
+      Node(type=FUNC, value="print")
+        Node(type=VAR, value="name")

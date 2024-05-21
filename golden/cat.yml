@@ -7,53 +7,8 @@ in_source: |
           input_char(c);
       }
   }
-in_stdin: |
+in_stdin: |-
   lera
-out_code: |
-  [
-      {
-          "opcode": "IN"
-      },
-      {
-          "opcode": "ST",
-          "arg": 1,
-          "addr_mode": "IMMEDIATE"
-      },
-      {
-          "opcode": "JLE",
-          "arg": 8,
-          "addr_mode": "IMMEDIATE"
-      },
-      {
-          "opcode": "LD",
-          "arg": 1,
-          "addr_mode": "DIRECT"
-      },
-      {
-          "opcode": "OUT"
-      },
-      {
-          "opcode": "IN"
-      },
-      {
-          "opcode": "ST",
-          "arg": 1,
-          "addr_mode": "IMMEDIATE"
-      },
-      {
-          "opcode": "JMP",
-          "arg": 2,
-          "addr_mode": "IMMEDIATE"
-      },
-      {
-          "opcode": "HLT"
-      }
-  ]
-out_stdout: |
-  ============================================================
-  lera
-
-  instr_counter:  33 ticks: 50
 out_log: |
   INFO     root:machine.py:148 instruction: {'opcode': <Opcode.IN: 'IN'>}
   DEBUG    root:machine.py:115 {TICK: 1, PC: 1, ADDR: 0, ACC: 108, DR: 0, DA 0}
@@ -114,28 +69,79 @@ out_log: |
   INFO     root:machine.py:148 instruction: {'opcode': <Opcode.OUT: 'OUT'>}
   DEBUG    root:machine.py:115 {TICK: 35, PC: 5, ADDR: 1, ACC: 97, DR: 97, DA 1}
   INFO     root:machine.py:148 instruction: {'opcode': <Opcode.IN: 'IN'>}
-  DEBUG    root:machine.py:115 {TICK: 36, PC: 6, ADDR: 1, ACC: 10, DR: 97, DA 1}
+  DEBUG    root:machine.py:115 {TICK: 36, PC: 6, ADDR: 1, ACC: 0, DR: 97, DA 1}
   INFO     root:machine.py:148 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:115 {TICK: 37, PC: 6, ADDR: 1, ACC: 10, DR: 1, DA 1}
-  DEBUG    root:machine.py:115 {TICK: 38, PC: 7, ADDR: 1, ACC: 10, DR: 1, DA 1}
-  DEBUG    root:machine.py:115 {TICK: 39, PC: 7, ADDR: 1, ACC: 10, DR: 1, DA 1}
+  DEBUG    root:machine.py:115 {TICK: 37, PC: 6, ADDR: 1, ACC: 0, DR: 1, DA 1}
+  DEBUG    root:machine.py:115 {TICK: 38, PC: 7, ADDR: 1, ACC: 0, DR: 1, DA 1}
+  DEBUG    root:machine.py:115 {TICK: 39, PC: 7, ADDR: 1, ACC: 0, DR: 1, DA 1}
   INFO     root:machine.py:148 instruction: {'opcode': <Opcode.JMP: 'JMP'>, 'arg': 2, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:115 {TICK: 40, PC: 2, ADDR: 1, ACC: 10, DR: 1, DA 1}
+  DEBUG    root:machine.py:115 {TICK: 40, PC: 2, ADDR: 1, ACC: 0, DR: 1, DA 1}
   INFO     root:machine.py:148 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 8, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:115 {TICK: 41, PC: 3, ADDR: 1, ACC: 10, DR: 1, DA 1}
-  INFO     root:machine.py:148 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
-  DEBUG    root:machine.py:115 {TICK: 42, PC: 3, ADDR: 1, ACC: 10, DR: 10, DA 1}
-  DEBUG    root:machine.py:115 {TICK: 43, PC: 4, ADDR: 1, ACC: 10, DR: 10, DA 1}
-  INFO     root:machine.py:148 instruction: {'opcode': <Opcode.OUT: 'OUT'>}
-  DEBUG    root:machine.py:115 {TICK: 44, PC: 5, ADDR: 1, ACC: 10, DR: 10, DA 1}
-  INFO     root:machine.py:148 instruction: {'opcode': <Opcode.IN: 'IN'>}
-  DEBUG    root:machine.py:115 {TICK: 45, PC: 6, ADDR: 1, ACC: 0, DR: 10, DA 1}
-  INFO     root:machine.py:148 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:115 {TICK: 46, PC: 6, ADDR: 1, ACC: 0, DR: 1, DA 1}
-  DEBUG    root:machine.py:115 {TICK: 47, PC: 7, ADDR: 1, ACC: 0, DR: 1, DA 1}
-  DEBUG    root:machine.py:115 {TICK: 48, PC: 7, ADDR: 1, ACC: 0, DR: 1, DA 1}
-  INFO     root:machine.py:148 instruction: {'opcode': <Opcode.JMP: 'JMP'>, 'arg': 2, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:115 {TICK: 49, PC: 2, ADDR: 1, ACC: 0, DR: 1, DA 1}
-  INFO     root:machine.py:148 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 8, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:115 {TICK: 50, PC: 8, ADDR: 1, ACC: 0, DR: 1, DA 1}
+  DEBUG    root:machine.py:115 {TICK: 41, PC: 8, ADDR: 1, ACC: 0, DR: 1, DA 1}
   INFO     root:machine.py:148 instruction: {'opcode': <Opcode.HLT: 'HLT'>}
+out_stdout: |
+  ============================================================
+  lera
+  instr_counter:  27 ticks: 41
+out_code: |
+  [
+      {
+          "opcode": "IN"
+      },
+      {
+          "opcode": "ST",
+          "arg": 1,
+          "addr_mode": "IMMEDIATE"
+      },
+      {
+          "opcode": "JLE",
+          "arg": 8,
+          "addr_mode": "IMMEDIATE"
+      },
+      {
+          "opcode": "LD",
+          "arg": 1,
+          "addr_mode": "DIRECT"
+      },
+      {
+          "opcode": "OUT"
+      },
+      {
+          "opcode": "IN"
+      },
+      {
+          "opcode": "ST",
+          "arg": 1,
+          "addr_mode": "IMMEDIATE"
+      },
+      {
+          "opcode": "JMP",
+          "arg": 2,
+          "addr_mode": "IMMEDIATE"
+      },
+      {
+          "opcode": "HLT"
+      }
+  ]
+out_ast: |
+  Node(type=PROG, value="None")
+    Node(type=SEQ, value="None")
+      Node(type=SEQ, value="None")
+        Node(type=SEQ, value="None")
+          Node(type=EMPTY, value="None")
+          Node(type=OPERATOR, value="=")
+            Node(type=VAR_STRING, value="c")
+            Node(type=STRING_CONST, value="a")
+        Node(type=FUNC, value="input_char")
+          Node(type=VAR, value="c")
+      Node(type=KEY_WORDS, value="while")
+        Node(type=OPERATOR, value=">")
+          Node(type=VAR, value="c")
+          Node(type=INT_CONST, value="0")
+        Node(type=SEQ, value="None")
+          Node(type=SEQ, value="None")
+            Node(type=EMPTY, value="None")
+            Node(type=FUNC, value="print_char")
+              Node(type=VAR, value="c")
+          Node(type=FUNC, value="input_char")
+            Node(type=VAR, value="c")

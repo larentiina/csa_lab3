@@ -26,12 +26,11 @@ class DataPath:
     data_address = None
     acc = None
     input_buffer = None
-    "Буфер входных данных. Инициализируется входными данными конструктора."
-
     output_buffer = None
-    "Буфер выходных данных."
     data_register = None
     alu = None
+    MAX_VALUE = 65535
+    MIN_VALUE = -65536
 
     def __init__(self, data, data_memory_size, input_buffer):
         assert data_memory_size > 0, "Data_memory size should be non-zero"
@@ -61,7 +60,7 @@ class DataPath:
             DRMuxSignals.CU,
         }, "internal error, incorrect selector: {}".format(sel)
         if sel == DRMuxSignals.DM:
-            self.data_register = self.data_memory[int(self.data_address)]
+            self.data_register = int(val)
         elif sel == DRMuxSignals.CU:
             self.data_register = int(val)
 
@@ -72,14 +71,24 @@ class DataPath:
         }, "internal error, incorrect selector: {}".format(sel)
         if sel == AccMuxSignals.ALU:
             self.acc = self.alu
-            if self.acc == 1024:
-                pass
+            if self.acc > self.MAX_VALUE:
+                self.acc = self.MIN_VALUE
+            elif self.acc < self.MIN_VALUE:
+                self.acc = self.MAX_VALUE
         elif sel == AccMuxSignals.IN:
-            self.acc = ord(self.input_buffer[self.input_buffer_counter])
+            if len(self.input_buffer) == 0:
+                raise EOFError()
+            symbol = ord(self.input_buffer[self.input_buffer_counter])
             self.input_buffer_counter += 1
+            self.acc = symbol
+            logging.debug("input: %s", repr(symbol))
 
     def signal_wr_to_memory(self):
+
         self.data_memory[self.data_address] = self.acc
+
+    def signal_oe_memory(self):
+        return self.data_memory[int(self.data_address)]
 
     def zero_flag(self):
         return self.acc == 0
@@ -94,13 +103,16 @@ class DataPath:
         self.alu = self.acc - self.data_register
 
     def signal_alu_div(self):
+        assert self.data_register != 0, "internal error, incorrect data: {}".format(self.data_register)
         self.alu = self.acc % self.data_register
 
     def signal_alu_only_right_in(self):
         self.alu = self.data_register
 
     def signal_latch_out(self):
-        self.output_buffer.append(chr(self.acc))
+        symbol = chr(self.acc)
+        logging.debug("output: %s << %s", repr("".join(self.output_buffer)), repr(symbol))
+        self.output_buffer.append(symbol)
 
 
 class ControlUnit:
@@ -132,14 +144,20 @@ class ControlUnit:
             self.tick()
         elif instr["addr_mode"] == AddressMode.DIRECT.value:
             self.data_path.signal_latch_data_address(DAMuxSignals.CU, value)
-            self.data_path.signal_latch_data_reg(DRMuxSignals.DM, None)
+            val = self.data_path.signal_oe_memory()
+            self.tick()
+            self.data_path.signal_latch_data_reg(DRMuxSignals.DM, val)
             self.tick()
         elif instr["addr_mode"] == AddressMode.INDIRECT.value:
             self.data_path.signal_latch_data_address(DAMuxSignals.CU, value)
-            self.data_path.signal_latch_data_reg(DRMuxSignals.DM, None)
+            val = self.data_path.signal_oe_memory()
+            self.tick()
+            self.data_path.signal_latch_data_reg(DRMuxSignals.DM, val)
             self.tick()
             self.data_path.signal_latch_data_address(DAMuxSignals.DR, value)
-            self.data_path.signal_latch_data_reg(DRMuxSignals.DM, None)
+            val = self.data_path.signal_oe_memory()
+            self.tick()
+            self.data_path.signal_latch_data_reg(DRMuxSignals.DM, val)
             self.tick()
 
     def decode_and_execute_instruction(self):
@@ -159,19 +177,16 @@ class ControlUnit:
             self.tick()
             self.data_path.signal_wr_to_memory()
             self.tick()
-        elif opcode in [Opcode.SUB, Opcode.CMP, Opcode.ADD]:
+        elif opcode in [Opcode.SUB, Opcode.CMP, Opcode.ADD, Opcode.DIV]:
             self.operand_fetch(instr)
             self.signal_latch_program_counter(sel_next=True)
             if opcode == Opcode.ADD:
                 self.data_path.signal_alu_add()
+            elif opcode == Opcode.DIV:
+                self.data_path.signal_alu_div()
             else:
                 self.data_path.signal_alu_sub()
-            self.data_path.signal_latch_acc(AccMuxSignals.ALU)
             self.tick()
-        elif opcode == Opcode.DIV:
-            self.operand_fetch(instr)
-            self.signal_latch_program_counter(sel_next=True)
-            self.data_path.signal_alu_div()
             self.data_path.signal_latch_acc(AccMuxSignals.ALU)
             self.tick()
         elif opcode == Opcode.JMP:
@@ -227,11 +242,13 @@ def simulation(data, code, input_tokens, data_memory_size, limit):
 
     except StopIteration:
         pass
+    except AssertionError as e:
+        print("Error: {}".format(e))
     output = ""
     for i in control_unit.data_path.output_buffer:
         output += i
     print("".join(output))
-    print("instr_counter: ", instr_counter, "ticks:", control_unit._tick)
+    print("instr_counter: ", instr_counter, "ticks:", control_unit.current_tick())
     if instr_counter >= limit:
         logging.warning("Limit exceeded!")
 
@@ -250,7 +267,7 @@ def main(code_file, input_file):
         code,
         input_tokens=input_token,
         data_memory_size=256,
-        limit=2000,
+        limit=1000,
     )
 
 
