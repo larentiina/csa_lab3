@@ -39,14 +39,14 @@
            <expr> "+" <expr> |
            <expr> "-" <expr>
 
-<id> ::= <letter>
+<id> ::= {<letter>}-
 
-<string> ::= <letter> | <string> <letter>
+<string> ::= {<letter> | <letter>_?!}- 
 
 
-<letter> ::= [a-zA-Z]
+<letter> ::= {[a-zA-Z]}-
 
-<digit> ::= "0" | "1" | ... | "9"
+<digit> ::= {"0" | "1" | ... | "9"}
 ```
 ### Особенности
 - У переменных глобальная область видимости
