@@ -708,7 +708,6 @@ def main(source, target):
 
     compiler = Compiler(mm, node)
     program = compiler.compile(node)
-    print(len(program))
     write_code(target, program, mm.memory)
 
 

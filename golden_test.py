@@ -49,10 +49,8 @@ def test_translator_and_machine(golden, caplog):
         # Записываем входные данные в файлы. Данные берутся из теста.
         with open(source, "w", encoding="utf-8") as file:
             file.write(golden["in_source"])
-            # print(golden["in_source"])
         with open(input_stream, "w", encoding="utf-8") as file:
             file.write(golden["in_stdin"])
-            # print(golden["in_stdin"])
 
         # Запускаем транслятор и собираем весь стандартный вывод в переменную
         # stdout
