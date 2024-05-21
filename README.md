@@ -2,7 +2,7 @@
 
 Кузенина Валерия Николаевна, P3232
 
-alg | acc | harv | hw | tick | struct | stream | port | pstr | prob1 |
+`alg | acc | harv | hw | tick | struct | stream | port | pstr | prob1 |`
 
 Базовый вариант (без усложнения)
 ## Синтаксис
@@ -28,7 +28,7 @@ alg | acc | harv | hw | tick | struct | stream | port | pstr | prob1 |
 
 <type> ::= "int" | "string"
 
-<input-expr> ::= "input" "(" <id> ")" | "(" "input_char" <id> ")"
+<input-expr> ::= "input" "(" <id> ")" |  "input_char" "(" <id> ")"
 
 <output-expr> ::= "print" ( <id> | <string> ) | "print_char" ( <id> | <letter> )
 
@@ -46,9 +46,12 @@ alg | acc | harv | hw | tick | struct | stream | port | pstr | prob1 |
 <letter> ::= [a-zA-Z]
 
 <digit> ::= "0" | "1" | ... | "9"
-
-
 ```
+### Особенности
+- У переменных глобальная область видимости
+- Статическая типизация
+- Поддерживаемые типы: `string`, `int`
+- 
 ## Модель процессора
 ![data_path.svg](./model/data_path.svg)
 
