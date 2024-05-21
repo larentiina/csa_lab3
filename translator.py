@@ -208,13 +208,6 @@ class Parser:
             n = self.statement()
         return n
 
-    def print_tree(self, node, level=0):
-        if node is None:
-            return
-        print("  " * level + str(node))
-        self.print_tree(node.op1, level + 1)
-        self.print_tree(node.op2, level + 1)
-        self.print_tree(node.op3, level + 1)
 
     def parse(self):
         node = Node(Parser.PROG)

@@ -10,13 +10,16 @@ import machine
 import translator
 
 
-def print_tree(node, level=0):
+def print_ast(node, level=0):
     if node is None:
         return
-    print("  " * level + str(node))
-    print_tree(node.op1, level + 1)
-    print_tree(node.op2, level + 1)
-    print_tree(node.op3, level + 1)
+    print('  ' * level + str(node.type) + ": " + str(node.value))
+    if node.op1:
+        print_ast(node.op1, level + 1)
+    if node.op2:
+        print_ast(node.op2, level + 1)
+    if node.op3:
+        print_ast(node.op3, level + 1)
 
 @pytest.mark.golden_test("golden/*.yml")
 def test_parser(golden):
@@ -25,7 +28,7 @@ def test_parser(golden):
             data = f.read().replace("\n", "")
             parser = translator.Parser(translator.Lexer(), translator.Lexer().lex(data))
             node = parser.parse()
-            print_tree(node)
+            print_ast(node)
 
     assert stdout.getvalue() == golden.out["out_ast"]
 @pytest.mark.golden_test("golden/*.yml")
