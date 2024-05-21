@@ -431,8 +431,8 @@ jobs:
 ### Общая статистика
 ```text
 | ФИО                            | алг         | LoC | code байт | code инстр. | инстр. | такт. | вариант |
-| Кузенина Валерия Николаевна    | hello_world | 7   | -         | 13          | 129    | 339   | alg | acc | harv | hw | tick | struct | stream | port | pstr | prob1 |     |
-| Кузенина Валерия Николаевна    | hello_user  | 1   | -         | 47          | 349    | 911   | alg | acc | harv | hw | tick | struct | stream | port | pstr | prob1 |     |
+| Кузенина Валерия Николаевна    | hello_world | 3   | -         | 13          | 129    | 339   | alg | acc | harv | hw | tick | struct | stream | port | pstr | prob1 |     |
+| Кузенина Валерия Николаевна    | hello_user  | 7   | -         | 47          | 349    | 911   | alg | acc | harv | hw | tick | struct | stream | port | pstr | prob1 |     |
 | Кузенина Валерия Николаевна    | cat         | 8   | -         | 9           | 27     | 45    | alg | acc | harv | hw | tick | struct | stream | port | pstr | prob1 |     |
 | Кузенина Валерия Николаевна    | prob1       | 14  | -         | 25          | 15404  | 38677 | alg | acc | harv | hw | tick | struct | stream | port | pstr | prob1 |     |
 ```
