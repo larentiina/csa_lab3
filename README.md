@@ -154,7 +154,7 @@ PROG: None
 Реализован в [machine](./machine.py)
 Интерфейс командной строки: `.\machine <input_code_file> <input_buffer>`
 ### Схема
-![data_path.svg](./model/data_path.svg) ![cu.svg](./model/cu.svg)
+![data_path.svg](./model/data_path.svg)  ![cu.svg](./model/cu.svg)
 
 Control Unit:
 - Моделирование на уровне тактов
