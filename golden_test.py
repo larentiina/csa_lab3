@@ -13,13 +13,14 @@ import translator
 def print_ast(node, level=0):
     if node is None:
         return
-    print('  ' * level + str(node.type) + ": " + str(node.value))
+    print("  " * level + str(node.type) + ": " + str(node.value))
     if node.op1:
         print_ast(node.op1, level + 1)
     if node.op2:
         print_ast(node.op2, level + 1)
     if node.op3:
         print_ast(node.op3, level + 1)
+
 
 @pytest.mark.golden_test("golden/*.yml")
 def test_parser(golden):
@@ -31,6 +32,8 @@ def test_parser(golden):
             print_ast(node)
 
     assert stdout.getvalue() == golden.out["out_ast"]
+
+
 @pytest.mark.golden_test("golden/*.yml")
 def test_translator_and_machine(golden, caplog):
     # Установим уровень отладочного вывода на DEBUG
@@ -50,8 +53,6 @@ def test_translator_and_machine(golden, caplog):
         with open(input_stream, "w", encoding="utf-8") as file:
             file.write(golden["in_stdin"])
             # print(golden["in_stdin"])
-
-
 
         # Запускаем транслятор и собираем весь стандартный вывод в переменную
         # stdout
