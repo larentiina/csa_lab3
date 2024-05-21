@@ -174,9 +174,9 @@ class Parser:
     def statement(self):
         n = None
         if (
-                self.get_token_type() == TokensName.ID
-                or self.get_token_type() == TokensName.INT
-                or self.get_token_type() == TokensName.STRING
+            self.get_token_type() == TokensName.ID
+            or self.get_token_type() == TokensName.INT
+            or self.get_token_type() == TokensName.STRING
         ):
             node = self.kind_of_node(self.get_token())
             n = self.expression(node)
@@ -501,8 +501,8 @@ class Compiler:
         elif node.type == Parser.FUNC:
             if node.value == "print":
                 if (
-                        node.op1.type == Parser.STRING_CONST
-                        or self.memory_manager.variables_types[node.op1.value] == "string"
+                    node.op1.type == Parser.STRING_CONST
+                    or self.memory_manager.variables_types[node.op1.value] == "string"
                 ):
                     value = node.op1.value
                     if node.op1.type == Parser.STRING_CONST:
@@ -708,6 +708,7 @@ def main(source, target):
 
     compiler = Compiler(mm, node)
     program = compiler.compile(node)
+    print(len(program))
     write_code(target, program, mm.memory)
 
 

@@ -29,8 +29,8 @@ class DataPath:
     output_buffer = None
     data_register = None
     alu = None
-    MAX_VALUE = 65535
-    MIN_VALUE = -65536
+    MAX_WORD_SIZE = 2147483647
+    MIN_WORD_SIZE = -2147483648
 
     def __init__(self, data, data_memory_size, input_buffer):
         assert data_memory_size > 0, "Data_memory size should be non-zero"
@@ -71,10 +71,10 @@ class DataPath:
         }, "internal error, incorrect selector: {}".format(sel)
         if sel == AccMuxSignals.ALU:
             self.acc = self.alu
-            if self.acc > self.MAX_VALUE:
-                self.acc = self.MIN_VALUE
-            elif self.acc < self.MIN_VALUE:
-                self.acc = self.MAX_VALUE
+            if self.acc > self.MAX_WORD_SIZE:
+                self.acc = self.MIN_WORD_SIZE
+            elif self.acc < self.MIN_WORD_SIZE:
+                self.acc = self.MAX_WORD_SIZE
         elif sel == AccMuxSignals.IN:
             if len(self.input_buffer) == 0:
                 raise EOFError()
@@ -84,7 +84,6 @@ class DataPath:
             logging.debug("input: %s", repr(symbol))
 
     def signal_wr_to_memory(self):
-
         self.data_memory[self.data_address] = self.acc
 
     def signal_oe_memory(self):
