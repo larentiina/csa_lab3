@@ -1304,24 +1304,6 @@ out_log: |
   DEBUG    root:machine.py:127 {TICK: 911, PC: 46, ADDR: 53, ACC: -1, DR: 53, DA 53}
   INFO     root:machine.py:166 instruction: {'opcode': <Opcode.HLT: 'HLT'>}
 out_stdout: |
-  PROG: None
-    SEQ: None
-      SEQ: None
-        SEQ: None
-          SEQ: None
-            SEQ: None
-              EMPTY: None
-              FUNC: print
-                STRING_CONST: Whats your name? 
-            OPERATOR: =
-              VAR_STRING: name
-              STRING_CONST: 
-          FUNC: print
-            STRING_CONST: Hello, 
-        FUNC: input
-          VAR: name
-      FUNC: print
-        VAR: name
   ============================================================
   Whats your name? Hello, lera
   instr_counter:  349 ticks: 911
@@ -1554,24 +1536,6 @@ out_code: |
       }
   ]
 out_ast: |
-  PROG: None
-    SEQ: None
-      SEQ: None
-        SEQ: None
-          SEQ: None
-            SEQ: None
-              EMPTY: None
-              FUNC: print
-                STRING_CONST: Whats your name? 
-            OPERATOR: =
-              VAR_STRING: name
-              STRING_CONST: 
-          FUNC: print
-            STRING_CONST: Hello, 
-        FUNC: input
-          VAR: name
-      FUNC: print
-        VAR: name
   PROG: None
     SEQ: None
       SEQ: None

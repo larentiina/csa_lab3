@@ -486,11 +486,6 @@ out_log: |
   DEBUG    root:machine.py:127 {TICK: 339, PC: 12, ADDR: 34, ACC: -1, DR: 34, DA 34}
   INFO     root:machine.py:166 instruction: {'opcode': <Opcode.HLT: 'HLT'>}
 out_stdout: |
-  PROG: None
-    SEQ: None
-      EMPTY: None
-      FUNC: print
-        STRING_CONST: Hello world!
   ============================================================
   Hello world!
   instr_counter:  129 ticks: 339
@@ -559,11 +554,6 @@ out_code: |
       }
   ]
 out_ast: |
-  PROG: None
-    SEQ: None
-      EMPTY: None
-      FUNC: print
-        STRING_CONST: Hello world!
   PROG: None
     SEQ: None
       EMPTY: None

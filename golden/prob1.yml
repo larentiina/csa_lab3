@@ -3529,57 +3529,6 @@ out_log: |
   DEBUG    root:machine.py:127 {TICK: 2512, PC: 23, ADDR: 0, ACC: 65, DR: 0, DA 0}
   WARNING  root:machine.py:253 Limit exceeded!
 out_stdout: |
-  PROG: None
-    SEQ: None
-      SEQ: None
-        SEQ: None
-          EMPTY: None
-          OPERATOR: =
-            VAR_INT: i
-            INT_CONST: 0
-        OPERATOR: =
-          VAR_INT: sum
-          INT_CONST: 0
-      KEY_WORDS: while
-        OPERATOR: <
-          VAR: i
-          INT_CONST: 1000
-        SEQ: None
-          SEQ: None
-            EMPTY: None
-            KEY_WORDS: if
-              OPERATOR: ==
-                OPERATOR: %
-                  VAR: i
-                  INT_CONST: 3
-                INT_CONST: 0
-              SEQ: None
-                EMPTY: None
-                OPERATOR: =
-                  VAR: sum
-                  OPERATOR: +
-                    VAR: sum
-                    VAR: i
-              SEQ: None
-                EMPTY: None
-                KEY_WORDS: if
-                  OPERATOR: ==
-                    OPERATOR: %
-                      VAR: i
-                      INT_CONST: 5
-                    INT_CONST: 0
-                  SEQ: None
-                    EMPTY: None
-                    OPERATOR: =
-                      VAR: sum
-                      OPERATOR: +
-                        VAR: sum
-                        VAR: i
-          OPERATOR: =
-            VAR: i
-            OPERATOR: +
-              VAR: i
-              INT_CONST: 1
   ============================================================
 
   instr_counter:  1000 ticks: 2512
@@ -3710,57 +3659,6 @@ out_code: |
       }
   ]
 out_ast: |
-  PROG: None
-    SEQ: None
-      SEQ: None
-        SEQ: None
-          EMPTY: None
-          OPERATOR: =
-            VAR_INT: i
-            INT_CONST: 0
-        OPERATOR: =
-          VAR_INT: sum
-          INT_CONST: 0
-      KEY_WORDS: while
-        OPERATOR: <
-          VAR: i
-          INT_CONST: 1000
-        SEQ: None
-          SEQ: None
-            EMPTY: None
-            KEY_WORDS: if
-              OPERATOR: ==
-                OPERATOR: %
-                  VAR: i
-                  INT_CONST: 3
-                INT_CONST: 0
-              SEQ: None
-                EMPTY: None
-                OPERATOR: =
-                  VAR: sum
-                  OPERATOR: +
-                    VAR: sum
-                    VAR: i
-              SEQ: None
-                EMPTY: None
-                KEY_WORDS: if
-                  OPERATOR: ==
-                    OPERATOR: %
-                      VAR: i
-                      INT_CONST: 5
-                    INT_CONST: 0
-                  SEQ: None
-                    EMPTY: None
-                    OPERATOR: =
-                      VAR: sum
-                      OPERATOR: +
-                        VAR: sum
-                        VAR: i
-          OPERATOR: =
-            VAR: i
-            OPERATOR: +
-              VAR: i
-              INT_CONST: 1
   PROG: None
     SEQ: None
       SEQ: None
