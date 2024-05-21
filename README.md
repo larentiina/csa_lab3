@@ -115,7 +115,38 @@
 - После этапа трансляции в `<target_file>`записывается последовательность машинных инструкций, которая пойдет в память инструкций в процессор, а в файл `data_section.txt` записывается заполненная статическая память, которая пойдет в память данных в процессоре.
 
 ### Пример
+Пример AST дерева для программы:
+```
+{
+  int a = 2;
+  int b = a + 2 - 3 + 10;
+  int c = a + b;
+}
+PROG: None
+  SEQ: None
+    SEQ: None
+      SEQ: None
+        EMPTY: None
+        OPERATOR: =
+          VAR_INT: a
+          INT_CONST: 2
+      OPERATOR: =
+        VAR_INT: b
+        OPERATOR: +
+          VAR: a
+          OPERATOR: -
+            INT_CONST: 2
+            OPERATOR: +
+              INT_CONST: 3
+              INT_CONST: 10
+    OPERATOR: =
+      VAR_INT: c
+      OPERATOR: +
+        VAR: a
+        VAR: b
 
+
+```
 ## Модель процессора
 Реализован в [machine](./machine.py)
 Интерфейс командной строки: `.\machine <input_code_file> <input_text>
