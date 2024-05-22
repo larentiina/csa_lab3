@@ -67,10 +67,11 @@ class Lexer:
                         token = (text, tag)
                         tokens.append(token)
                     break
-            if not match:
-                raise Exception("Illegal character: {}\n".format(characters[pos]))
-            else:
+            if match:
                 pos = match.end(0)
+            else:
+
+                raise ValueError("Illegal character: {}".format(characters[pos]))
         return tokens
 
 
@@ -100,7 +101,7 @@ class Parser:
     INT_CONST = "INT_CONST"
     STRING_CONST = "STRING_CONST"
     FUNC = "FUNC"
-    CMP_OP = {"<", "==", ">"}
+    CMP_OP: ClassVar[list[str]] = ["<", "==", ">"]
 
     def __init__(self, lexer, tokens):
         self.lexer = lexer
@@ -176,7 +177,6 @@ class Parser:
                 self.next_token()
             if self.get_token_text() == "else":
                 self.next_token()
-                assert self.get_token_type() == TokensName.SEPARATOR, 'Expected "{"'
                 n.op3 = self.statement()
             else:
                 self.token_index = self.token_index - 1
@@ -239,8 +239,8 @@ class Compiler:
                     }
                 )
             elif (
-                self.memory_manager.variables_types[node.value] == "string"
-                and self.memory_manager.memory[self.memory_manager.variables_address[node.value]] == 1
+                    self.memory_manager.variables_types[node.value] == "string"
+                    and self.memory_manager.memory[self.memory_manager.variables_address[node.value]] == 1
             ):
                 self.gen(
                     {
@@ -249,8 +249,6 @@ class Compiler:
                         "addr_mode": AddressMode.DIRECT,
                     }
                 )
-            else:
-                raise Exception("Invalid operation")
         else:
             self.compile(node)
 
@@ -612,14 +610,15 @@ class Compiler:
 
 def main(source, target):
     with open(source) as file:
-        data = file.read().replace("\n", "")
-    parser = Parser(Lexer(), Lexer().lex(data))
+        data = file.read()
+    parser = Parser(Lexer(), Lexer().lex(data.replace("\n", "")))
     node = parser.parse()
     mm = MemoryManager()
 
     compiler = Compiler(mm, node)
     program = compiler.compile(node)
     write_code(target, program, mm.memory)
+    print("source LoC:", data.count("\n"), "code instr:", len(program))
 
 
 if __name__ == "__main__":

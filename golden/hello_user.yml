@@ -1304,6 +1304,7 @@ out_log: |
   DEBUG    root:machine.py:126 {TICK: 911, PC: 46, ADDR: 89, ACC: -1, DR: 89, DA 89}
   INFO     root:machine.py:165 instruction: {'opcode': <Opcode.HLT: 'HLT'>}
 out_stdout: |
+  source LoC: 7 code instr: 47
   ============================================================
   Whats your name? Hello, lera
   instr_counter:  349 ticks: 911

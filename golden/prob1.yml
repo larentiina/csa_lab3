@@ -3527,6 +3527,7 @@ out_log: |
   DEBUG    root:machine.py:126 {TICK: 2510, PC: 23, ADDR: 0, ACC: 64, DR: 64, DA 0}
   WARNING  root:machine.py:252 Limit exceeded!
 out_stdout: |
+  source LoC: 14 code instr: 27
   ============================================================
 
   instr_counter:  1000 ticks: 2510

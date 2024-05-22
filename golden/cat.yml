@@ -134,6 +134,7 @@ out_log: |
   INFO     root:machine.py:165 instruction: {'opcode': <Opcode.HLT: 'HLT'>}
 out_stdout: |
   0
+  source LoC: 8 code instr: 11
   ============================================================
   lera
   instr_counter:  37 ticks: 75

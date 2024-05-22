@@ -486,6 +486,7 @@ out_log: |
   DEBUG    root:machine.py:126 {TICK: 339, PC: 12, ADDR: 42, ACC: -1, DR: 42, DA 42}
   INFO     root:machine.py:165 instruction: {'opcode': <Opcode.HLT: 'HLT'>}
 out_stdout: |
+  source LoC: 3 code instr: 13
   ============================================================
   Hello world!
   instr_counter:  129 ticks: 339
