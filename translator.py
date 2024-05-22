@@ -582,6 +582,7 @@ class Compiler:
                         "addr_mode": AddressMode.IMMEDIATE,
                     }
                 )
+                self.memory_manager.memory_counter += 20
             elif node.value == "input_char":
                 var = node.op1.value
                 self.gen({"opcode": Opcode.IN})
