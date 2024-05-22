@@ -254,6 +254,7 @@ def simulation(data, code, input_tokens, data_memory_size, limit):
 
 def main(code_file, input_file):
     data, code = read_code(code_file)
+
     with open(input_file, encoding="utf-8") as file:
         input_text = file.read()
         input_token = []
