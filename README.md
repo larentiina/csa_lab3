@@ -53,7 +53,7 @@
 - Статическая строгая типизация
 - Поддерживаемые типы: `string`, `int`
   - `int` - числовой тип, используется всегда по значению. Может принимать значение любого числа, помещающегося в 1 слово.
-  - `string` - строковый тип. Память под строки выделяется статически. Строки immutable. При присваивании переменной типа string новой строки в памяти меняется указатель на данную переменную.
+  - `string` - строковый тип. Память под строки выделяется статически. 
 - Поддерживаются математические операции: `+`, `-`,`%`
 - Все операторы правоасоциативные, кроме операторов сравнения: `<`, `>`,`==` - они имеют высший приоритет
 - Сигнатуры всех методов: `(int,int) -> int`. Исключение условия в циклах, в них возможно сравнение строки длинной 1 с int
@@ -78,7 +78,9 @@
 ### Память данных
 - Размер машинного слова 32 бит. В памяти данных хранятся статические данные - числа и строки. Число занимает одну ячейку памяти. Строки распределяются по одному символу в одну ячейку памяти, в начале строки - её длина.
 
-Вывод данных из памяти осуществляется в data register по адресу в data address. Ввод данных в память осуществляется и аккумулятора по сигналу oe по адресу в data address
+Вывод данных из памяти осуществляется в data register по адресу из data address. 
+
+Ввод данных в память осуществляется из аккумулятора по сигналу oe по адресу из data address
 ### Модель данных
 Обращение к переменной всегда осуществляется через прямую адресацию. 
 
@@ -259,8 +261,18 @@ lera\x00
           "addr_mode": "IMMEDIATE"
       },
       {
+          "opcode": "LD",
+          "arg": 1,
+          "addr_mode": "DIRECT"
+      },
+      {
+          "opcode": "CMP",
+          "arg": "0",
+          "addr_mode": "IMMEDIATE"
+      },
+      {
           "opcode": "JLE",
-          "arg": 8,
+          "arg": 10,
           "addr_mode": "IMMEDIATE"
       },
       {
@@ -291,88 +303,128 @@ lera\x00
 ```
 Журнал работы процессора:
 ```
- INFO     root:machine.py:166 instruction: {'opcode': <Opcode.IN: 'IN'>}
+   INFO     root:machine.py:165 instruction: {'opcode': <Opcode.IN: 'IN'>}
   DEBUG    root:machine.py:84 input: 108
-  DEBUG    root:machine.py:127 {TICK: 1, PC: 1, ADDR: 0, ACC: 108, DR: 0, DA 0}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 2, PC: 1, ADDR: 0, ACC: 108, DR: 1, DA 0}
-  DEBUG    root:machine.py:127 {TICK: 3, PC: 2, ADDR: 1, ACC: 108, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 4, PC: 2, ADDR: 1, ACC: 108, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 8, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 5, PC: 3, ADDR: 1, ACC: 108, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
-  DEBUG    root:machine.py:127 {TICK: 6, PC: 3, ADDR: 1, ACC: 108, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 7, PC: 3, ADDR: 1, ACC: 108, DR: 108, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 8, PC: 4, ADDR: 1, ACC: 108, DR: 108, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.OUT: 'OUT'>}
-  DEBUG    root:machine.py:114 output: '' << 'l'
-  DEBUG    root:machine.py:127 {TICK: 9, PC: 5, ADDR: 1, ACC: 108, DR: 108, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.IN: 'IN'>}
+  DEBUG    root:machine.py:126 {TICK: 1, PC: 1, ADDR: 0, ACC: 108, DR: 0, DA 0}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 2, PC: 1, ADDR: 0, ACC: 108, DR: 1, DA 0}
+  DEBUG    root:machine.py:126 {TICK: 3, PC: 2, ADDR: 1, ACC: 108, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 4, PC: 2, ADDR: 1, ACC: 108, DR: 1, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
+  DEBUG    root:machine.py:126 {TICK: 5, PC: 2, ADDR: 1, ACC: 108, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 6, PC: 2, ADDR: 1, ACC: 108, DR: 108, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 7, PC: 3, ADDR: 1, ACC: 108, DR: 108, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.CMP: 'CMP'>, 'arg': '0', 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 8, PC: 3, ADDR: 1, ACC: 108, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 9, PC: 4, ADDR: 1, ACC: 108, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 10, PC: 4, ADDR: 1, ACC: 108, DR: 0, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 10, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 11, PC: 5, ADDR: 1, ACC: 108, DR: 0, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
+  DEBUG    root:machine.py:126 {TICK: 12, PC: 5, ADDR: 1, ACC: 108, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 13, PC: 5, ADDR: 1, ACC: 108, DR: 108, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 14, PC: 6, ADDR: 1, ACC: 108, DR: 108, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.OUT: 'OUT'>}
+  DEBUG    root:machine.py:113 output: '' << 'l'
+  DEBUG    root:machine.py:126 {TICK: 15, PC: 7, ADDR: 1, ACC: 108, DR: 108, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.IN: 'IN'>}
   DEBUG    root:machine.py:84 input: 101
-  DEBUG    root:machine.py:127 {TICK: 10, PC: 6, ADDR: 1, ACC: 101, DR: 108, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 11, PC: 6, ADDR: 1, ACC: 101, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 12, PC: 7, ADDR: 1, ACC: 101, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 13, PC: 7, ADDR: 1, ACC: 101, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.JMP: 'JMP'>, 'arg': 2, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 14, PC: 2, ADDR: 1, ACC: 101, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 8, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 15, PC: 3, ADDR: 1, ACC: 101, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
-  DEBUG    root:machine.py:127 {TICK: 16, PC: 3, ADDR: 1, ACC: 101, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 17, PC: 3, ADDR: 1, ACC: 101, DR: 101, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 18, PC: 4, ADDR: 1, ACC: 101, DR: 101, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.OUT: 'OUT'>}
-  DEBUG    root:machine.py:114 output: 'l' << 'e'
-  DEBUG    root:machine.py:127 {TICK: 19, PC: 5, ADDR: 1, ACC: 101, DR: 101, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.IN: 'IN'>}
+  DEBUG    root:machine.py:126 {TICK: 16, PC: 8, ADDR: 1, ACC: 101, DR: 108, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 17, PC: 8, ADDR: 1, ACC: 101, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 18, PC: 9, ADDR: 1, ACC: 101, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 19, PC: 9, ADDR: 1, ACC: 101, DR: 1, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.JMP: 'JMP'>, 'arg': 2, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 20, PC: 2, ADDR: 1, ACC: 101, DR: 1, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
+  DEBUG    root:machine.py:126 {TICK: 21, PC: 2, ADDR: 1, ACC: 101, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 22, PC: 2, ADDR: 1, ACC: 101, DR: 101, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 23, PC: 3, ADDR: 1, ACC: 101, DR: 101, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.CMP: 'CMP'>, 'arg': '0', 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 24, PC: 3, ADDR: 1, ACC: 101, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 25, PC: 4, ADDR: 1, ACC: 101, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 26, PC: 4, ADDR: 1, ACC: 101, DR: 0, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 10, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 27, PC: 5, ADDR: 1, ACC: 101, DR: 0, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
+  DEBUG    root:machine.py:126 {TICK: 28, PC: 5, ADDR: 1, ACC: 101, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 29, PC: 5, ADDR: 1, ACC: 101, DR: 101, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 30, PC: 6, ADDR: 1, ACC: 101, DR: 101, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.OUT: 'OUT'>}
+  DEBUG    root:machine.py:113 output: 'l' << 'e'
+  DEBUG    root:machine.py:126 {TICK: 31, PC: 7, ADDR: 1, ACC: 101, DR: 101, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.IN: 'IN'>}
   DEBUG    root:machine.py:84 input: 114
-  DEBUG    root:machine.py:127 {TICK: 20, PC: 6, ADDR: 1, ACC: 114, DR: 101, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 21, PC: 6, ADDR: 1, ACC: 114, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 22, PC: 7, ADDR: 1, ACC: 114, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 23, PC: 7, ADDR: 1, ACC: 114, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.JMP: 'JMP'>, 'arg': 2, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 24, PC: 2, ADDR: 1, ACC: 114, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 8, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 25, PC: 3, ADDR: 1, ACC: 114, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
-  DEBUG    root:machine.py:127 {TICK: 26, PC: 3, ADDR: 1, ACC: 114, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 27, PC: 3, ADDR: 1, ACC: 114, DR: 114, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 28, PC: 4, ADDR: 1, ACC: 114, DR: 114, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.OUT: 'OUT'>}
-  DEBUG    root:machine.py:114 output: 'le' << 'r'
-  DEBUG    root:machine.py:127 {TICK: 29, PC: 5, ADDR: 1, ACC: 114, DR: 114, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.IN: 'IN'>}
+  DEBUG    root:machine.py:126 {TICK: 32, PC: 8, ADDR: 1, ACC: 114, DR: 101, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 33, PC: 8, ADDR: 1, ACC: 114, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 34, PC: 9, ADDR: 1, ACC: 114, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 35, PC: 9, ADDR: 1, ACC: 114, DR: 1, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.JMP: 'JMP'>, 'arg': 2, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 36, PC: 2, ADDR: 1, ACC: 114, DR: 1, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
+  DEBUG    root:machine.py:126 {TICK: 37, PC: 2, ADDR: 1, ACC: 114, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 38, PC: 2, ADDR: 1, ACC: 114, DR: 114, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 39, PC: 3, ADDR: 1, ACC: 114, DR: 114, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.CMP: 'CMP'>, 'arg': '0', 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 40, PC: 3, ADDR: 1, ACC: 114, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 41, PC: 4, ADDR: 1, ACC: 114, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 42, PC: 4, ADDR: 1, ACC: 114, DR: 0, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 10, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 43, PC: 5, ADDR: 1, ACC: 114, DR: 0, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
+  DEBUG    root:machine.py:126 {TICK: 44, PC: 5, ADDR: 1, ACC: 114, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 45, PC: 5, ADDR: 1, ACC: 114, DR: 114, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 46, PC: 6, ADDR: 1, ACC: 114, DR: 114, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.OUT: 'OUT'>}
+  DEBUG    root:machine.py:113 output: 'le' << 'r'
+  DEBUG    root:machine.py:126 {TICK: 47, PC: 7, ADDR: 1, ACC: 114, DR: 114, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.IN: 'IN'>}
   DEBUG    root:machine.py:84 input: 97
-  DEBUG    root:machine.py:127 {TICK: 30, PC: 6, ADDR: 1, ACC: 97, DR: 114, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 31, PC: 6, ADDR: 1, ACC: 97, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 32, PC: 7, ADDR: 1, ACC: 97, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 33, PC: 7, ADDR: 1, ACC: 97, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.JMP: 'JMP'>, 'arg': 2, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 34, PC: 2, ADDR: 1, ACC: 97, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 8, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 35, PC: 3, ADDR: 1, ACC: 97, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
-  DEBUG    root:machine.py:127 {TICK: 36, PC: 3, ADDR: 1, ACC: 97, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 37, PC: 3, ADDR: 1, ACC: 97, DR: 97, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 38, PC: 4, ADDR: 1, ACC: 97, DR: 97, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.OUT: 'OUT'>}
-  DEBUG    root:machine.py:114 output: 'ler' << 'a'
-  DEBUG    root:machine.py:127 {TICK: 39, PC: 5, ADDR: 1, ACC: 97, DR: 97, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.IN: 'IN'>}
+  DEBUG    root:machine.py:126 {TICK: 48, PC: 8, ADDR: 1, ACC: 97, DR: 114, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 49, PC: 8, ADDR: 1, ACC: 97, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 50, PC: 9, ADDR: 1, ACC: 97, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 51, PC: 9, ADDR: 1, ACC: 97, DR: 1, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.JMP: 'JMP'>, 'arg': 2, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 52, PC: 2, ADDR: 1, ACC: 97, DR: 1, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
+  DEBUG    root:machine.py:126 {TICK: 53, PC: 2, ADDR: 1, ACC: 97, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 54, PC: 2, ADDR: 1, ACC: 97, DR: 97, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 55, PC: 3, ADDR: 1, ACC: 97, DR: 97, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.CMP: 'CMP'>, 'arg': '0', 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 56, PC: 3, ADDR: 1, ACC: 97, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 57, PC: 4, ADDR: 1, ACC: 97, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 58, PC: 4, ADDR: 1, ACC: 97, DR: 0, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 10, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 59, PC: 5, ADDR: 1, ACC: 97, DR: 0, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
+  DEBUG    root:machine.py:126 {TICK: 60, PC: 5, ADDR: 1, ACC: 97, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 61, PC: 5, ADDR: 1, ACC: 97, DR: 97, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 62, PC: 6, ADDR: 1, ACC: 97, DR: 97, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.OUT: 'OUT'>}
+  DEBUG    root:machine.py:113 output: 'ler' << 'a'
+  DEBUG    root:machine.py:126 {TICK: 63, PC: 7, ADDR: 1, ACC: 97, DR: 97, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.IN: 'IN'>}
   DEBUG    root:machine.py:84 input: 0
-  DEBUG    root:machine.py:127 {TICK: 40, PC: 6, ADDR: 1, ACC: 0, DR: 97, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 41, PC: 6, ADDR: 1, ACC: 0, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 42, PC: 7, ADDR: 1, ACC: 0, DR: 1, DA 1}
-  DEBUG    root:machine.py:127 {TICK: 43, PC: 7, ADDR: 1, ACC: 0, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.JMP: 'JMP'>, 'arg': 2, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 44, PC: 2, ADDR: 1, ACC: 0, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 8, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
-  DEBUG    root:machine.py:127 {TICK: 45, PC: 8, ADDR: 1, ACC: 0, DR: 1, DA 1}
-  INFO     root:machine.py:166 instruction: {'opcode': <Opcode.HLT: 'HLT'>}
+  DEBUG    root:machine.py:126 {TICK: 64, PC: 8, ADDR: 1, ACC: 0, DR: 97, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.ST: 'ST'>, 'arg': 1, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 65, PC: 8, ADDR: 1, ACC: 0, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 66, PC: 9, ADDR: 1, ACC: 0, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 67, PC: 9, ADDR: 1, ACC: 0, DR: 1, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.JMP: 'JMP'>, 'arg': 2, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 68, PC: 2, ADDR: 1, ACC: 0, DR: 1, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 1, 'addr_mode': <AddressMode.DIRECT: 'DIRECT'>}
+  DEBUG    root:machine.py:126 {TICK: 69, PC: 2, ADDR: 1, ACC: 0, DR: 1, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 70, PC: 2, ADDR: 1, ACC: 0, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 71, PC: 3, ADDR: 1, ACC: 0, DR: 0, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.CMP: 'CMP'>, 'arg': '0', 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 72, PC: 3, ADDR: 1, ACC: 0, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 73, PC: 4, ADDR: 1, ACC: 0, DR: 0, DA 1}
+  DEBUG    root:machine.py:126 {TICK: 74, PC: 4, ADDR: 1, ACC: 0, DR: 0, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.JLE: 'JLE'>, 'arg': 10, 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
+  DEBUG    root:machine.py:126 {TICK: 75, PC: 10, ADDR: 1, ACC: 0, DR: 0, DA 1}
+  INFO     root:machine.py:165 instruction: {'opcode': <Opcode.HLT: 'HLT'>}
 ```
 Выходной буффер
 ```
