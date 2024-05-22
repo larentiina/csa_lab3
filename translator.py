@@ -595,7 +595,6 @@ class Compiler:
                 )
             elif node.value == "print_char":
                 var = node.op1.value
-                print(self.memory_manager.variables_address[var])
                 self.gen(
                     {
                         "opcode": Opcode.LD,
