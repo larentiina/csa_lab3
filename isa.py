@@ -35,13 +35,6 @@ class AddressMode(str, enum.Enum):
         return str(self.value)
 
 
-class Term(namedtuple("Term", "opcode arg addr_mode")):
-    """Описание выражения из исходного текста программы.
-
-    Сделано через класс, чтобы был docstring.
-    """
-
-
 def write_code(filename, code, data):
     """Записать машинный код в файл."""
     with open(filename, "w", encoding="utf-8") as file:
