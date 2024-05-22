@@ -70,7 +70,6 @@ class Lexer:
             if match:
                 pos = match.end(0)
             else:
-
                 raise ValueError("Illegal character: {}".format(characters[pos]))
         return tokens
 
@@ -239,8 +238,8 @@ class Compiler:
                     }
                 )
             elif (
-                    self.memory_manager.variables_types[node.value] == "string"
-                    and self.memory_manager.memory[self.memory_manager.variables_address[node.value]] == 1
+                self.memory_manager.variables_types[node.value] == "string"
+                and self.memory_manager.memory[self.memory_manager.variables_address[node.value]] == 1
             ):
                 self.gen(
                     {
