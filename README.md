@@ -41,7 +41,7 @@
 
 <id> ::= {<letter>}-
 
-<string> ::= {<letter> | <letter>_?!}- 
+<string> ::= <letter> | {<letter>_?!}- 
 
 
 <letter> ::= {[a-zA-Z]}-
