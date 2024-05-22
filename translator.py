@@ -176,15 +176,19 @@ class Parser:
                 self.next_token()
             if self.get_token_text() == "else":
                 self.next_token()
+                assert self.get_token_type() == TokensName.SEPARATOR, 'Expected "{"'
                 n.op3 = self.statement()
             else:
                 self.token_index = self.token_index - 1
         elif self.get_token_type() == TokensName.FUNC:
             n = Node(Parser.FUNC, self.get_token_text())
             self.next_token()
+            assert self.get_token_type() == TokensName.SEPARATOR, 'Expected "("'
             n.op1 = self.expression(n)
             self.next_token()
+            assert self.get_token_type() == TokensName.SEPARATOR, 'Expected ")"'
             self.next_token()
+            assert self.get_token_type() == TokensName.SEPARATOR, 'Expected ";"'
         elif self.get_token_type() == TokensName.LBRA:
             n = Node(Parser.EMPTY)
             self.next_token()
