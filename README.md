@@ -434,6 +434,24 @@ lera
 ```
 instr_counter:  27 ticks: 45
 ```
+### Итог тестирования 
+```
+platform win32 -- Python 3.10.7, pytest-8.2.1, pluggy-1.5.0 -- C:\Users\Валерия\PycharmProjects\csa_lab3\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Валерия\PycharmProjects\csa_lab3
+configfile: pyproject.toml
+plugins: golden-0.2.2
+collected 8 items                                                                                                                                                                      
+
+golden_test.py::test_parser[golden/cat.yml] PASSED                                                                                                                               [ 12%]
+golden_test.py::test_parser[golden/hello_user.yml] PASSED                                                                                                                        [ 25%]
+golden_test.py::test_parser[golden/hello_world.yml] PASSED                                                                                                                       [ 37%]
+golden_test.py::test_parser[golden/prob1.yml] PASSED                                                                                                                             [ 50%]
+golden_test.py::test_translator_and_machine[golden/cat.yml] PASSED                                                                                                               [ 62%]
+golden_test.py::test_translator_and_machine[golden/hello_user.yml] PASSED                                                                                                        [ 75%]
+golden_test.py::test_translator_and_machine[golden/hello_world.yml] PASSED                                                                                                       [ 87%]
+golden_test.py::test_translator_and_machine[golden/prob1.yml] PASSED                                                                                                             [100%]
+```
 ## Настройки CI
 В файле [python.yml](./.github/workflows/python.yml)
 ```
