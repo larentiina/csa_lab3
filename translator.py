@@ -230,7 +230,7 @@ class Compiler:
                 self.gen(
                     {
                         "opcode": Opcode.LD,
-                        "arg": self.memory_manager.variables_address[node.value] + 1,
+                        "arg": self.memory_manager.variables_address[node.value],
                         "addr_mode": AddressMode.DIRECT,
                     }
                 )
