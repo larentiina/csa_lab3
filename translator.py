@@ -209,6 +209,8 @@ class Parser:
 
 
 class MemoryManager:
+    BUFFER_SIZE = 20
+
     def __init__(self):
         self.memory_counter = 0
         self.variables_address: dict[str, int] = {}
@@ -423,10 +425,10 @@ class Compiler:
                     self.compile(node.op1)
 
                 var_addr = self.memory_manager.variables_address[value]
-                self.memory_manager.memory[self.memory_manager.memory_counter + 20] = var_addr
-                self.memory_manager.variables_address["ptr"] = self.memory_manager.memory_counter + 20
+                self.memory_manager.memory[self.memory_manager.memory_counter] = var_addr
+                self.memory_manager.variables_address["ptr"] = self.memory_manager.memory_counter
                 self.memory_manager.memory_counter += 1
-                self.memory_manager.variables_address["temp_count"] = self.memory_manager.memory_counter + 20
+                self.memory_manager.variables_address["temp_count"] = self.memory_manager.memory_counter
                 self.memory_manager.memory_counter += 1
                 self.gen(
                     {
@@ -510,17 +512,19 @@ class Compiler:
                 )
             elif node.value == "input":
                 var = node.op1.value
+                addr_length = self.memory_manager.variables_address[var]
                 addr_ptr = self.memory_manager.memory_counter
-                self.memory_manager.memory[addr_ptr] = addr_ptr + 2
+                self.memory_manager.memory[addr_ptr] = addr_length + 1
                 self.memory_manager.memory_counter += 1
-                self.memory_manager.variables_address[var] = self.memory_manager.memory_counter
-                addr_length = self.memory_manager.memory_counter
+                addr_buffer_size = self.memory_manager.memory_counter
+                self.memory_manager.memory[self.memory_manager.memory_counter] = self.memory_manager.BUFFER_SIZE
+                self.memory_manager.memory_counter += 1
                 temp = self.pc
                 self.gen({"opcode": Opcode.IN})
                 self.gen(
                     {
                         "opcode": Opcode.JZ,
-                        "arg": self.pc + 9,
+                        "arg": self.pc + 11,
                         "addr_mode": AddressMode.IMMEDIATE,
                     }
                 )
@@ -539,6 +543,7 @@ class Compiler:
                         "addr_mode": AddressMode.DIRECT,
                     }
                 )
+
                 self.gen(
                     {
                         "opcode": Opcode.ADD,
@@ -550,6 +555,20 @@ class Compiler:
                     {
                         "opcode": Opcode.ST,
                         "arg": addr_length,
+                        "addr_mode": AddressMode.IMMEDIATE,
+                    }
+                )
+                self.gen(
+                    {
+                        "opcode": Opcode.CMP,
+                        "arg": addr_buffer_size,
+                        "addr_mode": AddressMode.DIRECT,
+                    }
+                )
+                self.gen(
+                    {
+                        "opcode": Opcode.JGE,
+                        "arg": self.pc + 6,
                         "addr_mode": AddressMode.IMMEDIATE,
                     }
                 )
@@ -582,7 +601,6 @@ class Compiler:
                         "addr_mode": AddressMode.IMMEDIATE,
                     }
                 )
-                self.memory_manager.memory_counter += 20
             elif node.value == "input_char":
                 var = node.op1.value
                 self.gen({"opcode": Opcode.IN})

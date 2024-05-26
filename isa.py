@@ -20,6 +20,7 @@ class Opcode(str, Enum):
     OUTC = "OUTC"
     IN = "IN"
     JGE = "JGE"
+    JG = "JG"
 
     def __str__(self):
         return str(self.value)

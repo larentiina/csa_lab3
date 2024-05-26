@@ -31,6 +31,8 @@ class DataPath:
     alu = None
     MAX_WORD_SIZE = 2147483647
     MIN_WORD_SIZE = -2147483648
+    zero_flag = 0
+    negative_flag = 0
 
     def __init__(self, data, data_memory_size, input_buffer):
         assert data_memory_size > 0, "Data_memory size should be non-zero"
@@ -208,6 +210,9 @@ class ControlUnit:
         elif opcode == Opcode.JGE:
             self.signal_latch_program_counter((not self.data_path.zero_flag()) and self.data_path.neg_flag())
             self.tick()
+        elif opcode == Opcode.JG:
+            self.signal_latch_program_counter(self.data_path.neg_flag())
+            self.tick()
         elif opcode == Opcode.IN:
             self.data_path.signal_latch_acc(AccMuxSignals.IN)
             self.signal_latch_program_counter(sel_next=True)
@@ -220,13 +225,14 @@ class ControlUnit:
             raise StopIteration()
 
     def __repr__(self):
-        return "{{TICK: {}, PC: {}, ADDR: {}, ACC: {}, DR: {}, DA {}}}".format(
+        return "{{TICK: {}, PC: {}, ADDR: {}, ACC: {}, DR: {}, DA {}, MEM{}}}".format(
             self._tick,
             self.program_counter,
             self.data_path.data_address,
             self.data_path.acc,
             self.data_path.data_register,
             self.data_path.data_address,
+            self.data_path.data_memory,
         )
 
 
