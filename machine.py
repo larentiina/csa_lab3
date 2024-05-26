@@ -225,14 +225,13 @@ class ControlUnit:
             raise StopIteration()
 
     def __repr__(self):
-        return "{{TICK: {}, PC: {}, ADDR: {}, ACC: {}, DR: {}, DA {}, MEM{}}}".format(
+        return "{{TICK: {}, PC: {}, ADDR: {}, ACC: {}, DR: {}, DA {}}}".format(
             self._tick,
             self.program_counter,
             self.data_path.data_address,
             self.data_path.acc,
             self.data_path.data_register,
             self.data_path.data_address,
-            self.data_path.data_memory,
         )
 
 
