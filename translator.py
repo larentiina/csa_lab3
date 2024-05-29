@@ -440,7 +440,7 @@ class Compiler:
                 self.gen(
                     {
                         "opcode": Opcode.ST,
-                        "arg":loop_count_addr,
+                        "arg": loop_count_addr,
                         "addr_mode": AddressMode.IMMEDIATE,
                     }
                 )
