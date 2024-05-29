@@ -8,6 +8,25 @@ in_source: |
   }
 in_stdin: |-
   lera
+out_ast: |
+  PROG: None
+    SEQ: None
+      SEQ: None
+        SEQ: None
+          SEQ: None
+            SEQ: None
+              EMPTY: None
+              FUNC: print
+                STRING_CONST: Whats your name? 
+            OPERATOR: =
+              VAR_STRING: name
+              STRING_CONST: 
+          FUNC: print
+            STRING_CONST: Hello, 
+        FUNC: input
+          VAR: name
+      FUNC: print
+        VAR: name
 out_log: |
   INFO     root:machine.py:167 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 21, 'addr_mode': <AddressMode.INDIRECT: 'INDIRECT'>}
   DEBUG    root:machine.py:128 {TICK: 1, PC: 0, ADDR: 21, ACC: 0, DR: 0, DA 21}
@@ -1574,22 +1593,3 @@ out_code: |
           "opcode": "HLT"
       }
   ]
-out_ast: |
-  PROG: None
-    SEQ: None
-      SEQ: None
-        SEQ: None
-          SEQ: None
-            SEQ: None
-              EMPTY: None
-              FUNC: print
-                STRING_CONST: Whats your name? 
-            OPERATOR: =
-              VAR_STRING: name
-              STRING_CONST: 
-          FUNC: print
-            STRING_CONST: Hello, 
-        FUNC: input
-          VAR: name
-      FUNC: print
-        VAR: name

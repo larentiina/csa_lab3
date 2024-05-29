@@ -9,6 +9,28 @@ in_source: |
   }
 in_stdin: |-
   lera
+out_ast: |
+  PROG: None
+    SEQ: None
+      SEQ: None
+        SEQ: None
+          EMPTY: None
+          OPERATOR: =
+            VAR_STRING: c
+            STRING_CONST: a
+        FUNC: input_char
+          VAR: c
+      KEY_WORDS: while
+        OPERATOR: >
+          VAR: c
+          INT_CONST: 0
+        SEQ: None
+          SEQ: None
+            EMPTY: None
+            FUNC: print_char
+              VAR: c
+          FUNC: input_char
+            VAR: c
 out_log: |
   INFO     root:machine.py:167 instruction: {'opcode': <Opcode.IN: 'IN'>}
   DEBUG    root:machine.py:86 input: 108
@@ -187,25 +209,3 @@ out_code: |
           "opcode": "HLT"
       }
   ]
-out_ast: |
-  PROG: None
-    SEQ: None
-      SEQ: None
-        SEQ: None
-          EMPTY: None
-          OPERATOR: =
-            VAR_STRING: c
-            STRING_CONST: a
-        FUNC: input_char
-          VAR: c
-      KEY_WORDS: while
-        OPERATOR: >
-          VAR: c
-          INT_CONST: 0
-        SEQ: None
-          SEQ: None
-            EMPTY: None
-            FUNC: print_char
-              VAR: c
-          FUNC: input_char
-            VAR: c

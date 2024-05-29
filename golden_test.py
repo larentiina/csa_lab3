@@ -66,4 +66,5 @@ def test_translator_and_machine(golden, caplog):
         # Проверяем, что ожидания соответствуют реальности.
         assert code == golden.out["out_code"]
         assert stdout.getvalue() == golden.out["out_stdout"]
+
         assert caplog.text == golden.out["out_log"]

@@ -14,6 +14,58 @@ in_source: |
     }
   }
 in_stdin: |
+out_ast: |
+  PROG: None
+    SEQ: None
+      SEQ: None
+        SEQ: None
+          EMPTY: None
+          OPERATOR: =
+            VAR_INT: i
+            INT_CONST: 0
+        OPERATOR: =
+          VAR_INT: sum
+          INT_CONST: 0
+      KEY_WORDS: while
+        OPERATOR: <
+          VAR: i
+          INT_CONST: 1000
+        SEQ: None
+          SEQ: None
+            EMPTY: None
+            KEY_WORDS: if
+              OPERATOR: ==
+                OPERATOR: %
+                  VAR: i
+                  INT_CONST: 3
+                INT_CONST: 0
+              SEQ: None
+                EMPTY: None
+                OPERATOR: =
+                  VAR: sum
+                  OPERATOR: +
+                    VAR: sum
+                    VAR: i
+              SEQ: None
+                EMPTY: None
+                KEY_WORDS: if
+                  OPERATOR: ==
+                    OPERATOR: %
+                      VAR: i
+                      INT_CONST: 5
+                    INT_CONST: 0
+                  SEQ: None
+                    EMPTY: None
+                    OPERATOR: =
+                      VAR: sum
+                      OPERATOR: +
+                        VAR: sum
+                        VAR: i
+          OPERATOR: =
+            VAR: i
+            OPERATOR: +
+              VAR: i
+              INT_CONST: 1
 out_log: |
   INFO     root:machine.py:167 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': '0', 'addr_mode': <AddressMode.IMMEDIATE: 'IMMEDIATE'>}
   DEBUG    root:machine.py:128 {TICK: 1, PC: 0, ADDR: 0, ACC: 0, DR: 0, DA 0}
@@ -3667,55 +3719,3 @@ out_code: |
           "opcode": "HLT"
       }
   ]
-out_ast: |
-  PROG: None
-    SEQ: None
-      SEQ: None
-        SEQ: None
-          EMPTY: None
-          OPERATOR: =
-            VAR_INT: i
-            INT_CONST: 0
-        OPERATOR: =
-          VAR_INT: sum
-          INT_CONST: 0
-      KEY_WORDS: while
-        OPERATOR: <
-          VAR: i
-          INT_CONST: 1000
-        SEQ: None
-          SEQ: None
-            EMPTY: None
-            KEY_WORDS: if
-              OPERATOR: ==
-                OPERATOR: %
-                  VAR: i
-                  INT_CONST: 3
-                INT_CONST: 0
-              SEQ: None
-                EMPTY: None
-                OPERATOR: =
-                  VAR: sum
-                  OPERATOR: +
-                    VAR: sum
-                    VAR: i
-              SEQ: None
-                EMPTY: None
-                KEY_WORDS: if
-                  OPERATOR: ==
-                    OPERATOR: %
-                      VAR: i
-                      INT_CONST: 5
-                    INT_CONST: 0
-                  SEQ: None
-                    EMPTY: None
-                    OPERATOR: =
-                      VAR: sum
-                      OPERATOR: +
-                        VAR: sum
-                        VAR: i
-          OPERATOR: =
-            VAR: i
-            OPERATOR: +
-              VAR: i
-              INT_CONST: 1

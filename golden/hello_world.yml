@@ -3,6 +3,12 @@ in_source: |
       print("Hello world!");
   }
 in_stdin: |
+out_ast: |
+  PROG: None
+    SEQ: None
+      EMPTY: None
+      FUNC: print
+        STRING_CONST: Hello world!
 out_log: |
   INFO     root:machine.py:167 instruction: {'opcode': <Opcode.LD: 'LD'>, 'arg': 21, 'addr_mode': <AddressMode.INDIRECT: 'INDIRECT'>}
   DEBUG    root:machine.py:128 {TICK: 1, PC: 0, ADDR: 21, ACC: 0, DR: 0, DA 21}
@@ -554,9 +560,3 @@ out_code: |
           "opcode": "HLT"
       }
   ]
-out_ast: |
-  PROG: None
-    SEQ: None
-      EMPTY: None
-      FUNC: print
-        STRING_CONST: Hello world!
