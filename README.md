@@ -30,7 +30,7 @@
 
 <input-expr> ::= "input" "(" <id> ")" |  "input_char" "(" <id> ")"
 
-<output-expr> ::= "print" ( <id> | <string> ) | "print_char" ( <id> | <letter> )
+<output-expr> ::= "print" ( <id> | <string> ) | "print_char" ( <id>)
 
 <expr> ::= <id> |
            <digit> |
