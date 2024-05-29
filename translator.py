@@ -311,7 +311,7 @@ class Compiler:
             for i in range(len(value)):
                 self.memory_manager.memory[self.memory_manager.memory_counter] = ord(value[i])
                 self.memory_manager.memory_counter += 1
-            self.memory_manager.memory_counter += 20 - len(value)
+            self.memory_manager.memory_counter += self.memory_manager.BUFFER_SIZE - len(value)
 
         elif Parser.VAR == node.type:
             if self.memory_manager.variables_types[node.value] == "int":
@@ -426,21 +426,21 @@ class Compiler:
 
                 var_addr = self.memory_manager.variables_address[value]
                 self.memory_manager.memory[self.memory_manager.memory_counter] = var_addr
-                self.memory_manager.variables_address["ptr"] = self.memory_manager.memory_counter
+                ptr_addr = self.memory_manager.memory_counter
                 self.memory_manager.memory_counter += 1
-                self.memory_manager.variables_address["temp_count"] = self.memory_manager.memory_counter
+                loop_count_addr = self.memory_manager.memory_counter
                 self.memory_manager.memory_counter += 1
                 self.gen(
                     {
                         "opcode": Opcode.LD,
-                        "arg": self.memory_manager.variables_address["ptr"],
+                        "arg": ptr_addr,
                         "addr_mode": AddressMode.INDIRECT,
                     }
                 )
                 self.gen(
                     {
                         "opcode": Opcode.ST,
-                        "arg": self.memory_manager.variables_address["temp_count"],
+                        "arg":loop_count_addr,
                         "addr_mode": AddressMode.IMMEDIATE,
                     }
                 )
@@ -448,7 +448,7 @@ class Compiler:
                 self.gen(
                     {
                         "opcode": Opcode.LD,
-                        "arg": self.memory_manager.variables_address["ptr"],
+                        "arg": ptr_addr,
                         "addr_mode": AddressMode.DIRECT,
                     }
                 )
@@ -462,7 +462,7 @@ class Compiler:
                 self.gen(
                     {
                         "opcode": Opcode.ST,
-                        "arg": self.memory_manager.variables_address["ptr"],
+                        "arg": ptr_addr,
                         "addr_mode": AddressMode.IMMEDIATE,
                     }
                 )
@@ -470,7 +470,7 @@ class Compiler:
                 self.gen(
                     {
                         "opcode": Opcode.LD,
-                        "arg": self.memory_manager.variables_address["temp_count"],
+                        "arg": loop_count_addr,
                         "addr_mode": AddressMode.DIRECT,
                     }
                 )
@@ -484,7 +484,7 @@ class Compiler:
                 self.gen(
                     {
                         "opcode": Opcode.ST,
-                        "arg": self.memory_manager.variables_address["temp_count"],
+                        "arg": loop_count_addr,
                         "addr_mode": AddressMode.IMMEDIATE,
                     }
                 )
@@ -498,7 +498,7 @@ class Compiler:
                 self.gen(
                     {
                         "opcode": Opcode.LD,
-                        "arg": self.memory_manager.variables_address["ptr"],
+                        "arg": ptr_addr,
                         "addr_mode": AddressMode.INDIRECT,
                     }
                 )
